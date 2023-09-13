@@ -14,7 +14,7 @@ Software utilizado para anotações de ferramentas:
 
 Principais ferramentas do projeto:
 
-1. Ruby - 3.1.2v
+1. Ruby - 3.2.1v
 2. Node - 17.9.0v
 3. NextJs - 12.1.5v   
 4. Rails - 7.0.3v
