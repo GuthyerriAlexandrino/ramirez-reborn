@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { pallete } from "../../styles/colors";
 
 interface HeaderProps {
