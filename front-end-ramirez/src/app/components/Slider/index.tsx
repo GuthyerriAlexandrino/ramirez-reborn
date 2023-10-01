@@ -7,7 +7,15 @@ import RightArrow from "../../assets/rightArrow.svg"
 import { 
   ArrowSliderLeft, 
   ArrowSliderRight, 
+  Bar, 
   Container, 
+  Divider, 
+  ImageSlider, 
+  Slide, 
+  SlideContent, 
+  SlideContentItems, 
+  SlideIndex, 
+  Typography 
 } from "./style"
 
 const imagesSlide = [
@@ -43,7 +51,24 @@ export const Slider = () => {
             <ArrowSliderLeft alt={"arrow"} src={LeftArrow} height={50} width={50} onClick={prevSlide}/>
             {imagesSlide.map((slide, index) => {
                 return (
-                    <div>test</div>
+                  <Slide isActive={index === current ? true : false} key={index}>
+                  {index === current && (
+                      <SlideContent>
+                          <ImageSlider alt={"slider"}  src={slide.image} width={1000} height={500} />
+                          <SlideContentItems>
+                              <Bar/>
+                              <Typography>
+                                  Reunindo inspirações
+                              </Typography>
+                              <SlideIndex>
+                                  {(index + 1).toString().padStart(2, "0")}
+                                  <Divider/>
+                                  {length.toString().padStart(2, "0")}
+                              </SlideIndex>
+                          </SlideContentItems>
+                      </SlideContent>
+                  )}
+              </Slide>
                 )
             })}
             <ArrowSliderRight alt={"arrow"}  src={RightArrow}  height={50} width={50} onClick={nextSlide}/>
