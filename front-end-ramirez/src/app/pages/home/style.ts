@@ -6,6 +6,10 @@ interface HeaderProps {
     toggleMenu: boolean;
 }
 
+interface ButtonProps {
+    background?: boolean
+}
+
 export const Container = styled(motion.div)`
     display: flex;
     flex-direction: column;
@@ -115,5 +119,31 @@ export const MenuContainer = styled.nav`
                 }
             }
         }
+    }
+`
+
+export const Button = styled.button<ButtonProps>`
+    font-family: 'Inter', sans-serif;
+    font-weight: ${props => props.background ? "normal" : 600};
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    padding: 5px;
+    background: ${props => props.background ? pallete.whiteOne : "none"};
+    color: ${props => props.background ? "#000000" : pallete.whiteOne};
+    border: ${props => !props.background ? "none" : "1px solid #000000"};
+    border-radius: ${props => props.background && "5px"};
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+        ${props => props.background && css`
+            background-color: #f5f4f4;
+        `}
+    }
+
+    @media screen and (max-width: 771px) {
+        font-size: 2rem;
+        padding: 1rem;
     }
 `
