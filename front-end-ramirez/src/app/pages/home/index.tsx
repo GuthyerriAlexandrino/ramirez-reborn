@@ -1,8 +1,9 @@
 "use client"
-import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button  } from "./style";
+import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, MenuIcon } from "./style";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { List, X } from "phosphor-react";
 
 export default function HomePage() {
     const [menuIsActive, setMenuIsActive] = useState(false);
@@ -11,7 +12,15 @@ export default function HomePage() {
         <Container 
             initial={{width: 0}} 
             animate={{width: "100%"}} 
-            exit={{ x: 100, transition: { duration: 0.6 } }}>
+            exit={{ x: 100, transition: { duration: 0.6 } }}
+        >
+            <MenuIcon onClick={() => setMenuIsActive(!menuIsActive)}>
+                {menuIsActive ? (
+                    <X size={40} />
+                ) : (
+                    <List size={40}/>
+                )}
+            </MenuIcon>
             <Header toggleMenu={menuIsActive}>
                 <HeaderContent>
                     <LogoImage />
