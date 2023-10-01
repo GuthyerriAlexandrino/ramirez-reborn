@@ -161,3 +161,30 @@ export const Button = styled.button<ButtonProps>`
         padding: 1rem;
     }
 `
+
+export const Main = styled.main`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: ${pallete.blackOne};
+`
+
+export const Services = styled.section`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+
+    h1 {
+        font-style: normal;
+        font-weight: 600;
+        font-size: min(6.25rem, 14vw);
+        line-height: 7.25rem;
+        text-align: center;
+        margin-bottom: 4rem;
+        color: ${pallete.whiteOne};
+    }
+`
