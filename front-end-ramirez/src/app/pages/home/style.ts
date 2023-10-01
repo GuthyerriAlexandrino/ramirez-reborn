@@ -194,3 +194,35 @@ export const ServiceCardArea = styled(motion.div)`
     flex-wrap: wrap;
     margin-top: 2.25rem;
 `
+
+export const ServiceCard = styled(motion.div)`
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 0 1 386px;
+    flex: 1 1 386px;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+
+    div {
+        margin-left: 2.125rem;
+    }
+
+    h3 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        line-height: 2.125rem;
+        width: 15.375rem;
+        margin-bottom: 0.875rem;
+        color: ${pallete.whiteOne};
+    }
+
+    p {
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.625rem;
+        color: ${pallete.whiteOne};
+        width: 17rem;
+        height: 5.3125rem;
+    }
+`
