@@ -188,3 +188,9 @@ export const Services = styled.section`
         color: ${pallete.whiteOne};
     }
 `
+
+export const ServiceCardArea = styled(motion.div)`
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 2.25rem;
+`
