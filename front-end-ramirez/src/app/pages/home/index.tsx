@@ -1,9 +1,10 @@
 "use client"
-import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, MenuIcon, Main,  Services} from "./style";
+import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, MenuIcon, Main, Services } from "./style";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logoHome from "../../assets/logo-home.svg";
+import logo from "../../assets/logo.svg";
 import { List, X } from "phosphor-react";
 import { useInView } from "react-intersection-observer";
 import { useAnimation, motion } from "framer-motion";
@@ -50,7 +51,15 @@ export default function HomePage() {
             </MenuIcon>
             <Header toggleMenu={menuIsActive}>
                 <HeaderContent>
-                    <LogoImage />
+                    <LogoImage>
+                        <Image 
+                            src={logo}
+                            width={123}
+                            height={40}
+                            objectFit="contain"
+                            alt=""
+                        />
+                    </LogoImage>
                     <MenuContainer>
                         <ul>
                             <li>
