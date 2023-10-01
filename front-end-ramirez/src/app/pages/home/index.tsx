@@ -12,6 +12,7 @@ import { List, X } from "phosphor-react";
 import { useInView } from "react-intersection-observer";
 import { useAnimation, motion } from "framer-motion";
 import { Slider } from "../../components/Slider";
+import { makeFadeInUptAnimation, stagger } from "@/app/utils/animations";
 
 let easing = [0.6, -0.05, 0.01, 0.99];
 
@@ -91,7 +92,7 @@ export default function HomePage() {
             </Header>
             
             <Main>
-                <motion.div>
+                <motion.div variants={makeFadeInUptAnimation()}>
                     <Image alt={"logo"} src={logoHome}/>
                 </motion.div>
 
