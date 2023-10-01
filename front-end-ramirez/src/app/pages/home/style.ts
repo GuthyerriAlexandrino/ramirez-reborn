@@ -21,6 +21,20 @@ export const Container = styled(motion.div)`
     color: ${pallete.whiteOne};
 `
 
+export const MenuIcon = styled.div`
+    position: fixed;
+    display:none;
+    cursor: pointer;
+    z-index: 9999990;
+  
+
+    @media screen and (max-width: 771px) {
+        display: block;
+        top: 10px;
+        right: 10px;
+    }
+`
+
 export const Header = styled.header<HeaderProps>`
     position: relative;
     display: flex;
