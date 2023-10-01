@@ -1,5 +1,5 @@
 "use client"
-import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, MenuIcon, Main, Services } from "./style";
+import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, MenuIcon, Main, Services, ServiceCardArea, ServiceCard } from "./style";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -49,6 +49,7 @@ export default function HomePage() {
                     <List size={40}/>
                 )}
             </MenuIcon>
+            
             <Header toggleMenu={menuIsActive}>
                 <HeaderContent>
                     <LogoImage>
@@ -60,6 +61,7 @@ export default function HomePage() {
                             alt=""
                         />
                     </LogoImage>
+                    
                     <MenuContainer>
                         <ul>
                             <li>
@@ -84,11 +86,40 @@ export default function HomePage() {
                     </MenuContainer>
                 </HeaderContent>
             </Header>
+            
             <Main>
                 <motion.div>
                     <Image alt={"logo"} src={logoHome}/>
                 </motion.div>
+
                 <Slider/>
+                
+                <Services>
+                    <motion.h1 animate={animation}>Serviços</motion.h1>
+                    <ServiceCardArea variants={stagger} ref={ref}>
+                        <ServiceCard animate={animation} >
+                            <Image src={Icon1} alt="" />
+                            <div>
+                                <h3>Construa seu portfólio</h3>
+                                <p>Adicione os seus trabalhos em nosso site e inicie o seu portfólio para adquirir novos clientes</p>
+                            </div>
+                        </ServiceCard>
+                        <ServiceCard animate={animation} >
+                            <Image src={Icon2} alt="" />
+                            <div>
+                                <h3>Pesquise por profissionais</h3>
+                                <p>Busque por profissionais de diversas áreas e que atenda as suas necessidades</p>
+                            </div>
+                        </ServiceCard>
+                        <ServiceCard animate={animation} >
+                            <Image src={Icon3} alt="" />
+                            <div>
+                                <h3>Indique o seu valor tipo de serviço</h3>
+                                <p>Informe aos futuros clientes o seu modo de trabalho e o seu valor de serviço</p>
+                            </div>
+                        </ServiceCard>
+                    </ServiceCardArea>
+                </Services>
             </Main>
         </Container>
     )
