@@ -55,3 +55,7 @@ export const Header = styled.header<HeaderProps>`
         }
     }
 `
+
+export const LogoImage = styled.div`
+    display: block;
+`
