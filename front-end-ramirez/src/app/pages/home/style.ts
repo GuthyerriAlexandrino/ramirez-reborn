@@ -59,3 +59,25 @@ export const Header = styled.header<HeaderProps>`
 export const LogoImage = styled.div`
     display: block;
 `
+
+export const HeaderContent = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 10px;
+
+    @media screen and (max-width: 771px) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+
+        ${LogoImage} {
+            position: absolute;
+            top: 10px;
+            left: 0;
+        }
+    }   
+`
