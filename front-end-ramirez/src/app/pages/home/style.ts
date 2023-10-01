@@ -81,3 +81,39 @@ export const HeaderContent = styled.div`
         }
     }   
 `
+
+export const MenuContainer = styled.nav`
+    max-width: 300px;
+    width: 100%;
+    /* margin-right: 30px; */
+
+    ul {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        list-style: none;
+
+        li {
+            margin-right: 10px;
+        }
+    }
+
+    @media screen and (max-width: 771px) {
+        margin-top: 4rem;
+
+        ul {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            li {
+                margin-bottom: 2rem;
+
+                &:nth-child(3) {
+                    display: none;
+                }
+            }
+        }
+    }
+`
