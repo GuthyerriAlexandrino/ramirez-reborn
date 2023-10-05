@@ -1,6 +1,8 @@
 "use client"
 
 import { PhotographerCard } from "../components/PhotographerCard"
+import { SelectInput } from "../components/SelectInput"
+import { PopupItem } from "../components/SelectInput/style"
 import {
   AditionalInputs,
   Container,
@@ -24,6 +26,15 @@ const orderOptions = [
 ]
 
 export default function Search() {
+  const specializationOptions = [
+    { id: 1, name: "Fotojornalismo" },
+    { id: 2, name: "Gastronomia" },
+    { id: 3, name: "Astrofotografia" },
+    { id: 4, name: "Publicidade" },
+    { id: 5, name: "Subaquática" },
+    { id: 6, name: "Aérea" },
+  ]
+
   return (
     <Container>
       <SearchPhotographerContainer>
@@ -38,6 +49,17 @@ export default function Search() {
             <SearchButton>Pesquisar</SearchButton>
           </div>
           <AditionalInputs>
+            <SelectInput selectName={"Especialização"}>
+              {Array.isArray(specializationOptions) &&
+                specializationOptions.map((item, id) => (
+                  <PopupItem key={id}>{item.name}</PopupItem>
+                ))}
+            </SelectInput>
+            <SelectInput selectName={"Ordenação por:"}>
+              {orderOptions.map((item, id) => (
+                <PopupItem key={id}>{item.name}</PopupItem>
+              ))}
+            </SelectInput>
             <PriceRangeContainer>
               <PriceRange>Faixa de preço:</PriceRange>
               <label htmlFor="minPrice"></label>
