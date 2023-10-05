@@ -116,6 +116,7 @@ export const SearchButton = styled.button`
   background-color: ${pallete.turquoiseOne};
   transition: all 0.2s ease;
   cursor: pointer;
+  color: #000000;
 
   &:hover {
     filter: brightness(0.92);
