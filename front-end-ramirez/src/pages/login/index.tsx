@@ -5,7 +5,7 @@ import {
     ExternaltLink,
     Divider,
     RegisterLink,
-} from "../../styles";
+} from "./styles";
 import { 
     Button, 
     FormBody, 
@@ -17,6 +17,8 @@ import Password from "../../assets/password.svg";
 import Email from "../../assets/email.svg";
 import EyeVisible from "../../assets/ant-design-eye-visible.svg"
 import EyeInvisible from "../../assets/ant-design_eye-invisible-filled.svg"
+
+
 
 import Link from "next/link";
 import Image from "next/image";
