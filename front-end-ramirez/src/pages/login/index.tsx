@@ -53,14 +53,14 @@ export default function LogIn()  {
         >
             <LogInAside variants={makeFadeInRightAnimation()}>
                 <Link href="/">
-                    <Image src={Logo} style={{cursor: "pointer"}}/>
+                    <Image src={Logo} style={{ cursor: "pointer" }} alt={""}/>
                 </Link>
                 <h1>Faça o seu login na plataforma</h1>
             </LogInAside>
             <FormBody variants={makeFadeInRightAnimation()} action="" onSubmit={handleSubmit}>
                 <InputContainer>
                     <Icon align="left">
-                        <Image src={Email} width={24} height={24}/>
+                        <Image src={Email} width={24} height={24} alt={""}/>
                     </Icon>
                     <label htmlFor="email"></label>
                     <input 
@@ -73,10 +73,10 @@ export default function LogIn()  {
                 </InputContainer>
                 <InputContainer>
                     <Icon align="left">
-                        <Image src={Password} width={24} height={24}/>
+                        <Image src={Password} width={24} height={24} alt={""}/>
                     </Icon>
                     <Icon align="right" valuePosition={10} onClick={handleVisiblePassword}>
-                        <Image src={visible ? EyeVisible : EyeInvisible} width={24} height={24}/>
+                        <Image src={visible ? EyeVisible : EyeInvisible} width={24} height={24} alt={""}/>
                     </Icon>
                     <label htmlFor="passworld"></label>
                     <input 
