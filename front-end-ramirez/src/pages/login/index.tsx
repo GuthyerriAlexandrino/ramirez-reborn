@@ -5,7 +5,7 @@ import {
     ExternaltLink,
     Divider,
     RegisterLink,
-} from "./styles";
+} from "../../styles";
 import { 
     Button, 
     FormBody, 
