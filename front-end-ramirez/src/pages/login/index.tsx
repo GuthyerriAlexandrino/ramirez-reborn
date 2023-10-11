@@ -41,4 +41,15 @@ export default function LogIn()  {
         event.preventDefault();
         await handleLogin({email, password});
     }
+
+    return (
+        <Container
+            initial='initial' 
+            animate='animate' 
+            exit={{ opacity: 0 }}
+            variants={stagger}
+        >
+            
+        </Container>
+    )
 }
