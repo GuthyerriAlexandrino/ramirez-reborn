@@ -49,7 +49,57 @@ export default function LogIn()  {
             exit={{ opacity: 0 }}
             variants={stagger}
         >
-            
+            <LogInAside variants={makeFadeInRightAnimation()}>
+                <Link href="/">
+                    <Image src={Logo} style={{cursor: "pointer"}}/>
+                </Link>
+                <h1>Faça o seu login na plataforma</h1>
+            </LogInAside>
+            <FormBody variants={makeFadeInRightAnimation()} action="" onSubmit={handleSubmit}>
+                <InputContainer>
+                    <Icon align="left">
+                        <Image src={Email} width={24} height={24}/>
+                    </Icon>
+                    <label htmlFor="email"></label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        placeholder="Email" 
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </InputContainer>
+                <InputContainer>
+                    <Icon align="left">
+                        <Image src={Password} width={24} height={24}/>
+                    </Icon>
+                    <Icon align="right" valuePosition={10} onClick={handleVisiblePassword}>
+                        <Image src={visible ? EyeVisible : EyeInvisible} width={24} height={24}/>
+                    </Icon>
+                    <label htmlFor="passworld"></label>
+                    <input 
+                        title="deve conter ao menos um número, uma letra maiúscula e minúscula e deve conter pelo menos 8 caracteres"
+                        type={visible ? "text" : "password"} 
+                        id="passworld" 
+                        // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                        pattern="(?=.*[a-z]).{8,}"
+                        placeholder="Senha" 
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                     />
+                </InputContainer>
+                <Link href="#">
+                    <ExternaltLink align="left" isBold={false}>Esqueci minha senha</ExternaltLink>
+                </Link>
+                <Button type="submit">Entrar</Button>
+                <Divider/>
+                <RegisterLink>
+                    <span>Não tem uma conta?</span>
+                    <Link href="/signup">
+                        <ExternaltLink align="center" isBold={true}>Registre-se</ExternaltLink>
+                    </Link>
+                </RegisterLink>
+            </FormBody>
         </Container>
     )
 }
