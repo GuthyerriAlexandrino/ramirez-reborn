@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Button,
   CheckBoxArea,
@@ -8,13 +9,21 @@ import {
   InputFlex,
   Panel,
 } from "./style";
-import { Buildings, Eye, Key, User } from "phosphor-react";
+import { Buildings, Eye, EyeSlash, Key, User } from "phosphor-react";
 import Email from "../../assets/email.svg";
 
 import Image from "next/image";
 import { pallete } from "../../styles/colors";
 
 export function FormRegister() {
+  const [visiblePassword, setVisiblePassword] = useState(false);
+  const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
+  function handleVisiblePassword() {
+    setVisiblePassword(!visiblePassword);
+  }
+  function handleVisibleConfirmePassword() {
+    setVisibleConfirmPassword(!visibleConfirmPassword);
+  }
   return (
     <FormBody action="">
       <h2>Criar a sua conta</h2>
@@ -42,13 +51,17 @@ export function FormRegister() {
         <Icon align="left">
           <Key size={24} color={pallete.blackFour} weight="fill" />
         </Icon>
-        <Icon align="right">
-          {<Eye size={24} color={pallete.turquoiseOne} weight="fill" />}
+        <Icon align="right" onClick={handleVisiblePassword}>
+          {visiblePassword ? (
+            <Eye size={24} color={pallete.turquoiseOne} weight="fill" />
+          ) : (
+            <EyeSlash size={24} color={pallete.turquoiseOne} weight="fill" />
+          )}
         </Icon>
         <label htmlFor="password"></label>
         <input
           title="deve conter ao menos um número, uma letra maiúscula e minúscula e deve conter pelo menos 8 caracteres"
-          type={"password"}
+          type={visiblePassword ? "text" : "password"}
           id="password"
           name="password"
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
@@ -60,13 +73,17 @@ export function FormRegister() {
         <Icon align="left">
           <Key size={24} color={pallete.blackFour} weight="fill" />
         </Icon>
-        <Icon align="right">
-          <Eye size={24} color={pallete.turquoiseOne} weight="fill" />
+        <Icon align="right" onClick={handleVisibleConfirmePassword}>
+          {visibleConfirmPassword ? (
+            <Eye size={24} color={pallete.turquoiseOne} weight="fill" />
+          ) : (
+            <EyeSlash size={24} color={pallete.turquoiseOne} weight="fill" />
+          )}
         </Icon>
         <label htmlFor="password_confirmatiopn"></label>
         <input
           title="deve conter ao menos um número, uma letra maiúscula e minúscula e deve conter pelo menos 8 caracteres"
-          type={"password"}
+          type={visibleConfirmPassword ? "text" : "password"}
           id="password_confirmatiopn"
           name="password_confirmatiopn"
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
