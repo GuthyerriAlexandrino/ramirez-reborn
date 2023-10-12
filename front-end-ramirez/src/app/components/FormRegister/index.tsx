@@ -18,6 +18,7 @@ import { pallete } from "../../styles/colors";
 export function FormRegister() {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
+  const [isPhotographer, setIsPhotographer] = useState(false);
   function handleVisiblePassword() {
     setVisiblePassword(!visiblePassword);
   }
@@ -98,10 +99,14 @@ export function FormRegister() {
             type="checkbox"
             id="photographer"
             name="photographer"
+            checked={isPhotographer}
+            onChange={() => {
+              setIsPhotographer(!isPhotographer);
+            }}
           />
           <label htmlFor="photographer">Sou fotógrafo</label>
         </CheckBoxArea>
-        <Panel active={true}>
+        <Panel active={isPhotographer}>
           <InputFlex>
             <InputContainer>
               <Icon align="left">
@@ -113,7 +118,7 @@ export function FormRegister() {
                 id="city"
                 name="city"
                 placeholder="Cidade"
-                required
+                required={isPhotographer ? true : false}
               />
             </InputContainer>
             <InputContainer>
@@ -126,7 +131,7 @@ export function FormRegister() {
                 id="state"
                 name="state"
                 placeholder="Estado"
-                required
+                required={isPhotographer ? true : false}
               />
             </InputContainer>
           </InputFlex>
