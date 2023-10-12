@@ -1,4 +1,11 @@
 import { useState } from "react";
+
+//import Logo from "../../../assets/logo.svg";
+//import Password from "../../../assets/password.svg";
+//import Email from "../../../assets/email.svg";
+//import EyeVisible from "../../../assets/ant-design-eye-visible.svg";
+//import EyeInvisible from "../../../assets/ant-design_eye-invisible-filled.svg";
+
 import { 
     Container,
     LogInAside,
@@ -12,18 +19,14 @@ import {
     Icon, 
     InputContainer 
 } from "../../styles/form";
-import Logo from "../../assets/logo.svg";
-import Password from "../../assets/password.svg";
-import Email from "../../assets/email.svg";
-import EyeVisible from "../../assets/ant-design-eye-visible.svg"
-import EyeInvisible from "../../assets/ant-design_eye-invisible-filled.svg"
+
+
 
 
 
 import Link from "next/link";
 import Image from "next/image";
-import { useAuthLogin } from "../../context/AuthContext";
-import { makeFadeInRightAnimation, stagger } from "../../utils/animations";
+import { makeFadeInRightAnimation, stagger } from "../../../utils/animations";
 
 
 export default function LogIn()  {
@@ -31,17 +34,13 @@ export default function LogIn()  {
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
 
-    const {
-        handleLogin,
-    } = useAuthLogin();
-
     function handleVisiblePassword() {
         setVisible(!visible);
     }
 
     async function handleSubmit(event: any) {
         event.preventDefault();
-        await handleLogin({email, password});
+        //await handleLogin({email, password});
     }
 
     return (
@@ -53,14 +52,14 @@ export default function LogIn()  {
         >
             <LogInAside variants={makeFadeInRightAnimation()}>
                 <Link href="/">
-                    <Image src={Logo} style={{ cursor: "pointer" }} alt={""}/>
+                    {/* <Image src={Logo} style={{ cursor: "pointer" }} alt={""}/> */}
                 </Link>
                 <h1>Faça o seu login na plataforma</h1>
             </LogInAside>
             <FormBody variants={makeFadeInRightAnimation()} action="" onSubmit={handleSubmit}>
                 <InputContainer>
                     <Icon align="left">
-                        <Image src={Email} width={24} height={24} alt={""}/>
+                        {/* <Image src={Email} width={24} height={24} alt={""}/> */}
                     </Icon>
                     <label htmlFor="email"></label>
                     <input 
@@ -73,10 +72,10 @@ export default function LogIn()  {
                 </InputContainer>
                 <InputContainer>
                     <Icon align="left">
-                        <Image src={Password} width={24} height={24} alt={""}/>
+                        {/* <Image src={Password} width={24} height={24} alt={""}/> */}
                     </Icon>
                     <Icon align="right" valuePosition={10} onClick={handleVisiblePassword}>
-                        <Image src={visible ? EyeVisible : EyeInvisible} width={24} height={24} alt={""}/>
+                        {/* <Image src={visible ? EyeVisible : EyeInvisible} width={24} height={24} alt={""}/> */}
                     </Icon>
                     <label htmlFor="passworld"></label>
                     <input 
