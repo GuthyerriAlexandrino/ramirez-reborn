@@ -22,6 +22,9 @@ export const FormBody = styled.form`
     margin-bottom: 1rem;
     color: ${pallete.whiteOne};
   }
+  @media screen and (max-width: 641px) {
+    width: 95%;
+  }
 `;
 
 export const InputFlex = styled.div`
