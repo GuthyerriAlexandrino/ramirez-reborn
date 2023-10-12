@@ -10,6 +10,7 @@ import Logo from "../Assets/logo.svg";
 import ArrowBack from "../Assets/arrow-back.svg";
 import Link from "next/link";
 import { makeFadeInRightAnimation, stagger } from "../utils/animations";
+import { FormRegister } from "../components/FormRegister";
 
 export default function SignUp() {
   return (
@@ -20,7 +21,7 @@ export default function SignUp() {
       variants={stagger}
     >
       <SignUpFormContainer variants={makeFadeInRightAnimation()}>
-        Form
+        <FormRegister />
       </SignUpFormContainer>
       <SignUpAside variants={makeFadeInRightAnimation()}>
         <Link href="/">
