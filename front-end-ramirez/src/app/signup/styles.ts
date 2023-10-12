@@ -11,11 +11,27 @@ export const Container = styled(motion.section)`
   height: 100%;
   padding: 46px 0;
   background-color: ${pallete.blackOne};
+  @media screen and (max-width: 1008px) {
+    display: grid;
+    grid-template-rows: repeat(2, 0.7fr);
+  }
+
+  @media screen and (max-width: 486px) {
+    grid-template-rows: repeat(2, 0.7fr);
+  }
 `;
 
 export const SignUpFormContainer = styled(motion.section)`
   display: flex;
   flex-direction: column;
+  @media screen and (max-width: 1008px) {
+    grid-row: 2 / 3;
+    place-items: center;
+  }
+
+  @media screen and (max-width: 641px) {
+    width: 100vw;
+  }
 `;
 
 export const SignUpAside = styled(motion.aside)`
@@ -39,6 +55,33 @@ export const SignUpAside = styled(motion.aside)`
     margin-top: 2.375rem;
     margin-bottom: 3.75rem;
     color: ${pallete.grayThree};
+  }
+  @media screen and (max-width: 1008px) {
+    grid-row: 1 / 2;
+    place-items: center;
+    width: 40rem;
+    margin-left: 0rem;
+    margin-bottom: 3rem;
+
+    h1,
+    p {
+      text-align: center;
+    }
+  }
+
+  @media screen and (max-width: 641px) {
+    width: 100vw;
+
+    h1 {
+      font-size: 1.5rem;
+      width: 95%;
+    }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.8rem;
+      width: 95%;
+    }
   }
 `;
 
