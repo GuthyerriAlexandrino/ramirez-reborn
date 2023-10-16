@@ -1,25 +1,38 @@
-import { CardContainer,  CardContent, FilterImage, ListSpecialization } from "./style";
+import { UserPhotographer } from "@/types/userPhotographer"
+import {
+  CardContainer,
+  CardContent,
+  FilterImage,
+  ListSpecialization,
+} from "./style"
 
-export function PhotographerCard() {
+type photographerCardProps = {
+  user: UserPhotographer
+}
 
+export function PhotographerCard({ user }: photographerCardProps) {
   return (
     <CardContainer imageUrl={"https://thispersondoesnotexist.com/"}>
-      <FilterImage/>
+      <FilterImage />
       <CardContent>
-        <h3>User name</h3>
+        <h3>{user.name}</h3>
         <div>
           <article>
-            <span>Cidade - Estado</span>
+            <span>
+              {user.city} - {user.state}
+            </span>
             <strong>Nenhum preço informado</strong>
           </article>
           <ListSpecialization>
             <span>Especialidades:</span>
             <ul>
-              <li>Social</li>
+              {user.specialization.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
           </ListSpecialization>
         </div>
       </CardContent>
     </CardContainer>
-    )
-}  
+  )
+}
