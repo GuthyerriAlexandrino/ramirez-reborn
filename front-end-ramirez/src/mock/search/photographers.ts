@@ -1,0 +1,95 @@
+import { UserPhotographer } from "@/types/userPhotographer"
+
+export const mockPhotographers: UserPhotographer[] = [
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Reyes Daley Tennyson",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: ["Eventos Sociais"],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Tabassum Tinashe Kimball",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: ["Eventos Sociais", "Publicidade", "Revistas"],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Duha Khumbo Ferreira",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: ["Astronomia"],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Paz Sevyn Dayton",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: [],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Giò Amosis Quiroga ",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: ["Eróticas", "Sensuais "],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Hla Tinashe Matthewson",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: [],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+  {
+    _id: {
+      $oid: crypto.randomUUID(),
+    },
+    name: "Emem Pich Cooke ",
+    city: "Quixadá",
+    state: "Fortaleza",
+    bio: "",
+    specialization: ["Abstrata e Artística"],
+    profile_img: "https://thispersondoesnotexist.com/",
+    services_price: [0.0, 0.0],
+    views: 0,
+  },
+]
