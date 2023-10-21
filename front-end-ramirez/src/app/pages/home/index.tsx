@@ -43,7 +43,7 @@ export default function HomePage() {
     return (
         <Container 
             initial={{width: 0, opacity: 0}} 
-            animate={{width: "100%", opacity: 1}} 
+            animate={{width: "100%", opacity: 1 }} 
             exit={{ x: 100, transition: { duration: 0.6 } }}
         >
             <MenuIcon onClick={() => setMenuIsActive(!menuIsActive)}>
