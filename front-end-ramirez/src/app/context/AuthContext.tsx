@@ -87,13 +87,6 @@ export function AuthProvider({children}: AuthProviderProps) {
   }
 
   async function handleLogin({email, password}: User) {
-      const user = {
-          user: {
-              email: email, 
-              password: password
-          }
-      }
-
       // futura integração
       const res = await fetch("", {})
       .then(response => response.json())
@@ -102,11 +95,9 @@ export function AuthProvider({children}: AuthProviderProps) {
       if (res.error) {
           notifyError("Falha no login! Verifique os campos preenchidos.")
       } else {
-
           setCookie(undefined, "ramirez-user", res.token, {
               expires: new Date(res.exp)
           })
-
           setCookie(undefined, "ramirez-user-id", res.user.$oid, {
               expires: new Date(res.exp)
           })
