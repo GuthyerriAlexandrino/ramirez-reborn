@@ -29,8 +29,8 @@ export function Header({userId}: HeaderProps) {
                     <Image 
                         src={Logo} 
                         // erro?
-                        width="123px" 
-                        height="40px" 
+                        width="123" 
+                        height="40" 
                         style={{marginLeft: "20px", cursor: "pointer"}}
                         alt="logo"
                     />
