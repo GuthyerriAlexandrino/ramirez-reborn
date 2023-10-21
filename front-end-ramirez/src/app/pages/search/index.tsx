@@ -1,14 +1,25 @@
 import { 
+  AditionalInputs,
    Container,
+   Divider,
+   InputName,
+   LocationAccordion,
    PhotographersList,
+   GenericInput,
+   PriceRange,
+   SearchButton,
+   SearchInputContainer, 
    SearchPhotographerContainer, 
+   PriceRangeContainer
 } from "./style";
+import { SelectInput } from "../../components/SelectInput";
 import { useEffect, useState } from "react";
 import { PhotographerCard } from "../../components/PhotographerCard";
 import { Header } from "../../components/Header";
 import { parseCookies } from "nookies";
 import { useAuthLogin } from "../../context/AuthContext";
 import Router from "next/router";
+import { PopupItem } from "../../components/SelectInput/style";
 import { GetServerSideProps } from "next";
 
 export type UserP = {
@@ -25,6 +36,10 @@ export type UserP = {
   views: number
 }
 
+type Specialization = {
+  name: string;
+}
+
 type Search = {
   name: string;
   orderBy: string;
@@ -33,6 +48,13 @@ type Search = {
   minPrice: number;
   maxPrice: number;
 }
+
+const orderOptions = [
+  {name: "Nenhum", field: null},
+  {name: "Visitas", field: "views"},
+  {name: "Curtidas", field: "likes"},
+  {name: "Preço", field: "price"}
+]
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { ["ramirez-user"]: token } = parseCookies(context);
@@ -51,8 +73,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-
 export default function Search() {
+  const [search, setSearch] = useState({} as Search);
+  const [isLocationActive, setIsLocationActive] = useState(false);
+  const [specializationOptions, setSpecializationOptions] = useState<Specialization[]>([]);
+  const [selectOrderByValue, setSelectOrderByValue] = useState("");
   const [users, setUsers] = useState<UserP[]>([]);
 
   let cookies = parseCookies();
@@ -93,6 +118,17 @@ export default function Search() {
       setUsers(data);
   }
 
+  function buildQuery(search: Search) {
+      let query = "";
+      for (let field in search) {
+          let value = search[field as keyof typeof search]
+          if (value) {
+              query += `${field}=${value}&`
+          }
+      }
+      return query
+  }   
+
   return (
       <Container
           initial={{width: 0}} 
@@ -102,7 +138,73 @@ export default function Search() {
           <Header userId={userSectionId}/>
           <SearchPhotographerContainer>
               <h1>Pesquisa por algum fotógrafo</h1>
-             
+              <SearchInputContainer>
+                  <div>
+                      <InputName 
+                          type="text" 
+                          placeholder="Digite aqui o nome de um fotógrafo" 
+                          onChange={(event: any) => setSearch({...search, name: event.target.value})}
+                          required/>
+                      <SearchButton onClick={() => getUsers()}>Pesquisar</SearchButton>
+                  </div>
+                  <AditionalInputs>
+                      <SelectInput selectName={search.specialization ? search.specialization : "Especialização"} >
+                          {Array.isArray(specializationOptions) && specializationOptions.map((item, id) => (
+                              <PopupItem key={id} onClick={() => setSearch({...search, specialization: item.name === "Nenhum" ? "" : item.name})}>
+                                  {item.name}
+                              </PopupItem>
+                          ))}
+                      </SelectInput>
+                      <SelectInput selectName={search.orderBy ? selectOrderByValue : "Ordenação por:"}>
+                          {orderOptions.map((item, id) => (
+                              <PopupItem 
+                                  key={id} 
+                                  onClick={() => {
+                                      setSearch({...search, orderBy: item.name === "Nenhum" ? "" : item.field!})
+                                      setSelectOrderByValue(item.name === "Nenhum" ? "" : item.name)
+                                  }}
+                              >
+                                  {item.name}
+                              </PopupItem>
+                          ))}
+                      </SelectInput>
+                      <PriceRangeContainer>
+                          <PriceRange>Faixa de preço:</PriceRange>
+                          <label htmlFor="minPrice"></label>
+                          <GenericInput 
+                              type="number" 
+                              id="minPrice" 
+                              name="minPrice" 
+                              placeholder="Mínimo"
+                              onChange={(event: any) => setSearch({...search, minPrice: Number(event.target.value)})}
+                          />
+                          <Divider/>
+                          <label htmlFor="maxPrice"></label>
+                          <GenericInput 
+                              type="number" 
+                              id="maxPrice" 
+                              name="maxPrice" 
+                              placeholder="Máximo"
+                              onChange={(event: any) => setSearch({...search, maxPrice: Number(event.target.value)})}
+                          />
+                      </PriceRangeContainer>
+                      <LocationAccordion isActive={isLocationActive}>
+                          <label htmlFor="location" onClick={() => setIsLocationActive(!isLocationActive)}>
+                              <div></div>
+                              Local
+                          </label>
+                          <div>
+                              <GenericInput 
+                                  type="text" 
+                                  id="location" 
+                                  name="location" 
+                                  placeholder="Quixadá"
+                                  onChange={(event: any) => setSearch({...search, location: event.target.value})}
+                              />
+                          </div>
+                      </LocationAccordion>
+                  </AditionalInputs>
+              </SearchInputContainer>
               <PhotographersList>
                   {Array.isArray(users) && users?.map(user => (
                       <PhotographerCard key={user._id.$oid} user={user}/>
