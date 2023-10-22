@@ -250,7 +250,86 @@ export default function Post({ postContent }: PostScreenProps) {
     return (
         <Container>
             <Header userId={userSectionId}/>
-
+            <PostContainer>
+                <PostArea>
+                    <PostContent>
+                        {image ? (
+                            <PostImage>
+                                <Image 
+                                    src={image}
+                                    alt={"Imagem da postagem"}
+                                    width={"100%"}
+                                    height={"50vh"}
+                                    layout="responsive"
+                                    objectFit="cover"
+                                />
+                            </PostImage>
+                        ) : (
+                            <PostLoading>
+                                <Loading/>
+                            </PostLoading>
+                        )}
+                        <ContentFooter>
+                            <span>
+                                {postContent.title}
+                                {postContent.price ? ` - R$ ${postContent.price}` : ""}
+                            </span>
+                            <IconsArea>
+                                <TrashSimple 
+                                    color={pallete.grayOne} 
+                                    size={30} 
+                                    weight="fill"
+                                    style={{cursor: "pointer"}}
+                                    onClick={() => deletePost()}
+                                />
+                                <Chat 
+                                    color={pallete.grayOne} 
+                                    size={30} weight="fill" 
+                                    style={{marginLeft: "1.25rem", cursor: "pointer"}} 
+                                />
+                                <Heart 
+                                    color={pallete.grayOne} 
+                                    size={30} 
+                                    weight="fill" 
+                                    style={{marginLeft: "1.25rem", cursor: "pointer"}}
+                                />
+                            </IconsArea>
+                        </ContentFooter>
+                    </PostContent>
+                    <CommentaryInputContainer>
+                        <CommentaryInput
+                            placeholder="Escreva aqui o seu comentário"
+                            cols={50}
+                            minLength={0}
+                            maxLength={500} 
+                            onChange={(event) => setUserCommentary(event.target.value)}
+                        />
+                        <CommentaryButton
+                            type="button"
+                            title="Clique para comentar"
+                            value={"Comentar"}
+                            onClick={() => sendCommentaryToPost()}
+                        >
+                            Comentar
+                        </CommentaryButton>
+                    </CommentaryInputContainer>
+                    <FeedBackArea>
+                        <h2>Comentários ({commentsList?.length})</h2>
+                        <FeedBackList>
+                            {commentsList?.map(comment => (
+                                <CommentaryCard
+                                    like={comment?.likes?.user_id?.$oid!}
+                                    content={comment}
+                                    key={comment._id.$oid}
+                                    id={comment._id.$oid}
+                                    incrementLikes={incrementLikeAmountInACommentary}
+                                    deleteCommentary={deleteACommentaryFromPost}
+                                />
+                            ))}
+                        </FeedBackList>
+                    </FeedBackArea>
+                </PostArea> 
+            </PostContainer>
         </Container>
     )
 }
