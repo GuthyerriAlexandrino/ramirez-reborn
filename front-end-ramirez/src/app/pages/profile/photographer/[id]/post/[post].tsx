@@ -1,8 +1,25 @@
+import { 
+    Container, 
+    ContentFooter, 
+    FeedBackArea, 
+    FeedBackList, 
+    IconsArea, 
+    PostContainer, 
+    PostArea,
+    PostContent, 
+    PostImage,
+    CommentaryInputContainer,
+    CommentaryInput,
+    CommentaryButton,
+    PostLoading
+} from "./style";
+
 import { TrashSimple, Chat, Heart } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { getDownloadURL } from "firebase/storage";
 import Image from "next/image";
 import { Header } from "../../../../../components/Header";
+import { Loading } from "../../../../../components/Loading";
 import { pallete } from "../../../../../styles/colors";
 import { parseCookies } from "nookies";
 import { storage, ref } from "../../../../../utils/keys/firebaseconfig";
