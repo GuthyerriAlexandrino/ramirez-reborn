@@ -1,3 +1,23 @@
+import { 
+    Container, 
+    ProfileAbout, 
+    ProfileCareer,
+    ProfileInfo,
+    ProfileImage,
+    ProfileInfoContainer, 
+    ProfileName,
+    Divider,
+    ProfileViews,
+    ProfileAside,
+    CareerData,
+    CareerDataContainer,
+    DividerArea,
+    PhotosGallery,
+    ProfileLocation,
+    MansoryGrid,
+    ImageLazyLoad
+} from "./style";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -170,7 +190,90 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
         >
             <Header userId={userSectionId}/>
             <MenuButton id={user?._id?.$oid} openModal={() => handlePopUpScreen(true)}/>
-            
+            <ProfileInfoContainer>
+                <ProfileInfo>
+                    <ProfileAside>
+                        <ProfileImage>
+                            <Image 
+                                src={profileImage ? profileImage : "/default-user.png"}
+                                layout="responsive"
+                                objectFit="cover"
+                                width={176}
+                                height={176}
+                                alt={"Foto de perfil"}
+                            />
+                        </ProfileImage>
+                        <ProfileName>
+                            {user?.name}
+                        </ProfileName>
+                        <ProfileLocation>
+                            {user?.city} - {user?.state}
+                        </ProfileLocation>
+                        <Divider vertical={false} height={2}/>
+                        <ProfileViews>
+                            <p>
+                                Esse perfil recebeu <br/>
+                                <span>
+                                    {user?.views <= 1 ? `${user?.views} visualização` : `${user?.views} visualizações`}
+                                </span>
+                            </p>
+                        </ProfileViews>
+                    </ProfileAside>
+                    <ProfileAbout>
+                        <h2>Sobre mim</h2>
+                        <p data-bio={user?.bio !== "" ? "hasBio" : 'noBio'}>
+                            {user?.bio !== "" ? user?.bio : "Nenhuma informação escrita..."}
+                        </p>
+                    </ProfileAbout>
+                    <ProfileCareer>
+                        <h2>Carreira Profissional</h2>
+                        <CareerDataContainer>
+                            <CareerData isRight={false}>
+                                <h3>Especialização</h3>
+                                {user?.specialization?.map((item, index) => (
+                                    <span key={index}>{item}</span>
+                                ))}
+                            </CareerData>
+                            <Divider vertical={true} height={90}/>
+                            <CareerData isRight={true}>
+                                <h3>Valor de Serviço</h3>
+                                {user?.services_price?.length >  0 ? (
+                                    <span>R$ {user?.services_price[0]} -  R$ {user?.services_price[1]} / foto</span>
+                                ) : (
+                                    <span>Sem informações</span>
+                                )}
+                            </CareerData>
+                        </CareerDataContainer>
+                    </ProfileCareer>
+                </ProfileInfo>
+            </ProfileInfoContainer>
+            <DividerArea>
+                <Divider vertical={false} height={2}/>
+            </DividerArea>
+            <PhotosGallery variants={stagger} ref={ref}>
+                <MansoryGrid>
+                     {Array.from(allPostsList).map((id) => (
+                        // eslint-disable-next-line @next/next/link-passhref
+                        <Link 
+                            href={`/profile/photographer/${user?._id?.$oid}/post/${id._id.$oid}`} 
+                            key={id._id.$oid} 
+                        >
+                            <motion.div 
+                                animate={animation}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <ImageLazyLoad
+                                    effect="blur" 
+                                    src={id.image} 
+                                    alt="Foto da galeria"
+                                />
+                            </motion.div>
+                        </Link>
+                    ))}
+                </MansoryGrid>
+            </PhotosGallery>
+            {popupIsOpen && <PublishPhoto handlePopUp={handlePopUpScreen}/>}
         </Container>
     )
 }
