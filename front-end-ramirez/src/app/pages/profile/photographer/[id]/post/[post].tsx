@@ -21,6 +21,7 @@ import Image from "next/image";
 import { Header } from "../../../../../components/Header";
 import { Loading } from "../../../../../components/Loading";
 import { pallete } from "../../../../../styles/colors";
+import { CommentaryCard } from "../../../../../components/ComentaryCard";
 import { parseCookies } from "nookies";
 import { storage, ref } from "../../../../../utils/keys/firebaseconfig";
 import { useRouter } from "next/router";
