@@ -46,13 +46,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    const data: Post = await fetch(`http://localhost:3001/post/${id}/${post}`, {
-        method: "GET",
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Authorization": `Bearer ${token}`
-        }
-    }).then(res => res.json());
+    //integração futura
+    const data: Post = await fetch(``, {}).then(res => res.json());
 
     const postContent = {
         price: data.price ?? null,
