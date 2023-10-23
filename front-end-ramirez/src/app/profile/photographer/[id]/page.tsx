@@ -1,3 +1,21 @@
+"use client"
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { parseCookies } from "nookies";
+import { useInView } from "react-intersection-observer";
+import { useAnimation } from "framer-motion";
+import 'react-lazy-load-image-component/src/effects/blur.css';
+import { motion }from "framer-motion";
+import { GetServerSideProps } from "next";
+import { Header } from "../../../components/Header";
+import { UserP } from "../../../search";
+import { MenuButton } from "../../../components/MenuButton";
+import { PublishPhoto } from "../../../components/PublishPhoto";
+import { getDownloadURL } from "firebase/storage";
+import { ref as refFirebase, storage } from "../../../utils/keys/firebaseconfig";
+import { useAuthLogin } from "../../../context/AuthContext";
+import Router from "next/router";
 import { 
     Container, 
     ProfileAbout, 
@@ -18,25 +36,6 @@ import {
     ImageLazyLoad
 } from "./style";
 
-import Image from "next/image";
-import Link from "next/link";
-
-import { useEffect, useState } from "react";
-import { parseCookies } from "nookies";
-import { useInView } from "react-intersection-observer";
-import { useAnimation } from "framer-motion";
-import 'react-lazy-load-image-component/src/effects/blur.css';
-import { motion }from "framer-motion";
-import { GetServerSideProps } from "next";
-import { Header } from "../../../../components/Header";
-import { UserP } from "../../../search";
-import { MenuButton } from "../../../../components/MenuButton";
-import { PublishPhoto } from "../../../../components/PublishPhoto";
-import { getDownloadURL } from "firebase/storage";
-import { ref as refFirebase, storage } from "../../../../utils/keys/firebaseconfig";
-import { useAuthLogin } from "../../../../context/AuthContext";
-import Router from "next/router";
-
 let photos = [
     {id:1, width: 640, height: 960},
     {id:2, width: 1920, height: 2880},
@@ -52,40 +51,42 @@ let photos = [
     {id: 12, width: 2400, height: 1596}
 ]
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id } = context.params!;
-    const { ["ramirez-user"]: token } = parseCookies(context);
+// futura integração
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//     const { id } = context.params!;
+//     const { ["ramirez-user"]: token } = parseCookies(context);
 
-    if (!token) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false,
-            }
-        }
-    }
+//     if (!token) {
+//         return {
+//             redirect: {
+//                 destination: '/login',
+//                 permanent: false,
+//             }
+//         }
+//     }
 
-    //futura integração
-    const data: UserP = await fetch(``, {}).then(res => res.json());
+//     //futura integração
+//     const data: UserP = await fetch(``, {}).then(res => res.json());
 
-    const user = {
-        _id: data._id ?? null,
-        name: data.name ?? null,
-        city: data.city ?? null,
-        state: data.state ?? null,
-        bio: data.bio ?? null,
-        specialization: data.specialization ?? null,
-        services_price: data.services_price ?? null,
-        profile_img: data.profile_img ?? null,
-        views: data.views ?? null
-    }
+//     // mock
+//     const user = {
+//         _id: data._id ?? "1",
+//         name: data.name ?? "Isa",
+//         city: data.city ?? "Pedro II",
+//         state: data.state ?? "PI",
+//         bio: data.bio ?? "Sou lindo",
+//         specialization: data.specialization ?? "comer",
+//         services_price: data.services_price ?? "caro",
+//         profile_img: data.profile_img ?? "sou emo",
+//         views: data.views ?? "0"
+//     }
 
-    return {
-        props: {
-            user,
-        },
-    }
-}
+//     return {
+//         props: {
+//             user,
+//         },
+//     }
+// }
 
 interface PhotographerProps {
     user: UserP;
@@ -107,26 +108,35 @@ interface Post {
 }
 
 export default function ProfilePhotographer({user}: PhotographerProps) {
-
     const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [allPostsList, setAllPostsList] = useState<Post[]>([]);
-    const [profileImage, setProfileImage] = useState<string | null>();
-
-
+    const [profileImage, setProfileImage] = useState<string | null>("");
     const { ref, inView } = useInView();
     const animation = useAnimation();
-
     const cookies = parseCookies();
     const userSectionId = cookies["ramirez-user-id"]
     const token = cookies["ramirez-user"]
 
-    
+    const mockUser = {
+        _id: {
+            $oid: "1"
+        },
+        name: "Isa",
+        city: "Pedro II",
+        state: "PI",
+        bio: "Sou lindo",
+        specialization: [],
+        profile_img: "",
+        services_price: [],
+        views: 0
+    }
+
     function handlePopUpScreen(value: boolean) {
         setPopupIsOpen(value);
     }
 
     async function getProfileImage() {
-        if (user.profile_img === "") {
+        if (mockUser.profile_img === "") {
             setProfileImage("/default-user.png")
             return;
         }
@@ -139,10 +149,10 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
 
     async function getAllPostsFromUser() {
         //futura integração
-        const allPosts: Post[] = await fetch(``, {}).then(response => response.json())
-        .catch(error => error.json());
+        // const allPosts: Post[] = await fetch(``, {}).then(response => response.json())
+        // .catch(error => error.json());
 
-        await generateImagesLinks(allPosts)
+        await generateImagesLinks([])
     }
 
     async function generateImagesLinks(allPosts: Post[]) {
@@ -189,13 +199,13 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
             exit={{ x: "100%" }}
         >
             <Header userId={userSectionId}/>
-            <MenuButton id={user?._id?.$oid} openModal={() => handlePopUpScreen(true)}/>
+            <MenuButton id={mockUser?._id?.$oid} openModal={() => handlePopUpScreen(true)}/>
             <ProfileInfoContainer>
                 <ProfileInfo>
                     <ProfileAside>
                         <ProfileImage>
                             <Image 
-                                src={profileImage ? profileImage : "/default-user.png"}
+                                src={profileImage ? profileImage : "/default-user.pn"}
                                 layout="responsive"
                                 objectFit="cover"
                                 width={176}
@@ -204,25 +214,25 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                             />
                         </ProfileImage>
                         <ProfileName>
-                            {user?.name}
+                            {mockUser?.name}
                         </ProfileName>
                         <ProfileLocation>
-                            {user?.city} - {user?.state}
+                            {mockUser?.city} - {mockUser?.state}
                         </ProfileLocation>
                         <Divider vertical={false} height={2}/>
                         <ProfileViews>
                             <p>
                                 Esse perfil recebeu <br/>
                                 <span>
-                                    {user?.views <= 1 ? `${user?.views} visualização` : `${user?.views} visualizações`}
+                                    {mockUser?.views <= 1 ? `${mockUser?.views} visualização` : `${mockUser?.views} visualizações`}
                                 </span>
                             </p>
                         </ProfileViews>
                     </ProfileAside>
                     <ProfileAbout>
                         <h2>Sobre mim</h2>
-                        <p data-bio={user?.bio !== "" ? "hasBio" : 'noBio'}>
-                            {user?.bio !== "" ? user?.bio : "Nenhuma informação escrita..."}
+                        <p data-bio={mockUser?.bio !== "" ? "hasBio" : 'noBio'}>
+                            {mockUser?.bio !== "" ? mockUser?.bio : "Nenhuma informação escrita..."}
                         </p>
                     </ProfileAbout>
                     <ProfileCareer>
@@ -230,15 +240,15 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                         <CareerDataContainer>
                             <CareerData isRight={false}>
                                 <h3>Especialização</h3>
-                                {user?.specialization?.map((item, index) => (
+                                {mockUser?.specialization?.map((item, index) => (
                                     <span key={index}>{item}</span>
                                 ))}
                             </CareerData>
                             <Divider vertical={true} height={90}/>
                             <CareerData isRight={true}>
                                 <h3>Valor de Serviço</h3>
-                                {user?.services_price?.length >  0 ? (
-                                    <span>R$ {user?.services_price[0]} -  R$ {user?.services_price[1]} / foto</span>
+                                {mockUser?.services_price?.length >  0 ? (
+                                    <span>R$ {mockUser?.services_price[0]} -  R$ {mockUser?.services_price[1]} / foto</span>
                                 ) : (
                                     <span>Sem informações</span>
                                 )}
@@ -255,7 +265,7 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                      {Array.from(allPostsList).map((id) => (
                         // eslint-disable-next-line @next/next/link-passhref
                         <Link 
-                            href={`/profile/photographer/${user?._id?.$oid}/post/${id._id.$oid}`} 
+                            href={`/profile/photographer/${mockUser?._id?.$oid}/post/${id._id.$oid}`} 
                             key={id._id.$oid} 
                         >
                             <motion.div 

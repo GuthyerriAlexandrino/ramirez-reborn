@@ -18,15 +18,15 @@ import { TrashSimple, Chat, Heart } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { getDownloadURL } from "firebase/storage";
 import Image from "next/image";
-import { Header } from "../../../../../components/Header";
-import { Loading } from "../../../../../components/Loading";
-import { pallete } from "../../../../../styles/colors";
-import { CommentaryCard } from "../../../../../components/ComentaryCard";
+import { Header } from "../../../../components/Header";
+import { Loading } from "../../../../components/Loading";
+import { pallete } from "../../../../styles/colors";
+import { CommentaryCard } from "../../../../components/ComentaryCard";
 import { parseCookies } from "nookies";
-import { storage, ref } from "../../../../../utils/keys/firebaseconfig";
+import { storage, ref } from "../../../../utils/keys/firebaseconfig";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
-import { useNotify } from "../../../../../context/NotifyContext";
+import { useNotify } from "../../../../context/NotifyContext";
 
 interface Post {
     price: number,
@@ -271,8 +271,8 @@ export default function Post({ postContent }: PostScreenProps) {
                                 <Image 
                                     src={image}
                                     alt={"Imagem da postagem"}
-                                    width={"100%"}
-                                    height={"50vh"}
+                                    width={"100"}
+                                    height={"50"}
                                     layout="responsive"
                                     objectFit="cover"
                                 />

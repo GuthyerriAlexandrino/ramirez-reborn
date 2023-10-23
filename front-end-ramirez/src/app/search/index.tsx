@@ -12,14 +12,14 @@ import {
    SearchPhotographerContainer, 
    PriceRangeContainer
 } from "./style";
-import { SelectInput } from "../../components/SelectInput";
+import { SelectInput } from "../components/SelectInput";
 import { useEffect, useState } from "react";
-import { PhotographerCard } from "../../components/PhotographerCard";
-import { Header } from "../../components/Header";
+import { PhotographerCard } from "../components/PhotographerCard";
+import { Header } from "../components/Header";
 import { parseCookies } from "nookies";
-import { useAuthLogin } from "../../context/AuthContext";
+import { useAuthLogin } from "../context/AuthContext";
 import Router from "next/router";
-import { PopupItem } from "../../components/SelectInput/style";
+import { PopupItem } from "../components/SelectInput/style";
 import { GetServerSideProps } from "next";
 
 export type UserP = {

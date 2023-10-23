@@ -3,15 +3,15 @@ import { Container, Header, HeaderContent, LogoImage, MenuContainer, Button, Men
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import logoHome from "../../assets/logo-home.svg";
-import logo from "../../assets/logo.svg";
-import Icon1 from "../../assets/icon1.svg";
-import Icon2 from "../../assets/icon2.svg";
-import Icon3 from "../../assets/icon3.svg";
+import logoHome from "../assets/logo-home.svg";
+import logo from "../assets/logo.svg";
+import Icon1 from "../assets/icon1.svg";
+import Icon2 from "../assets/icon2.svg";
+import Icon3 from "../assets/icon3.svg";
 import { List, X } from "phosphor-react";
 import { useInView } from "react-intersection-observer";
 import { useAnimation, motion } from "framer-motion";
-import { Slider } from "../../components/Slider";
+import { Slider } from "../components/Slider";
 import { makeFadeInUptAnimation, stagger } from "@/app/utils/animations";
 
 let easing = [0.6, -0.05, 0.01, 0.99];

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import styled, { css } from "styled-components";
-import { pallete } from "../../../../styles/colors";
+import { pallete } from "../../../styles/colors";
 
 interface DividerProps {
     height: number;

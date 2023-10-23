@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { pallete } from "../../../../../styles/colors";
+import { pallete } from "../../../../styles/colors";
 
 export const Container = styled.section`
     min-height: 100vh;

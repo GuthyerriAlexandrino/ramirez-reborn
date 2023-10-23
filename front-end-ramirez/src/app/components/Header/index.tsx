@@ -10,16 +10,15 @@ interface HeaderProps {
 }
 
 export function Header({userId}: HeaderProps) {
-
     const {
         userProfileImage,
         getProfileImage,
         removeToken
     } = useAuthLogin();
 
-    useEffect(() => {
-        getProfileImage();
-    }, [])
+    // useEffect(() => {
+    //     getProfileImage();
+    // }, [])
 
     return (
         <HeaderContainer>
@@ -51,7 +50,7 @@ export function Header({userId}: HeaderProps) {
                             <Link href={`/profile/photographer/${userId}`}>
                                 <Image
                                     src={userProfileImage ? userProfileImage : "/default-user.png"}
-                                    layout="fill"
+                                    // layout="fill"
                                     objectFit="cover"
                                     width={45}
                                     height={45}
