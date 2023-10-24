@@ -18,7 +18,7 @@ import {
     FormBody, 
     Icon, 
     InputContainer 
-} from "../../styles/form";
+} from "../styles/form";
 
 
 

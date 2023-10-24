@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import { pallete } from "../../styles/colors";
+import { pallete } from "../styles/colors";
 
 interface ExternaltLinkProps {
     align: string;
