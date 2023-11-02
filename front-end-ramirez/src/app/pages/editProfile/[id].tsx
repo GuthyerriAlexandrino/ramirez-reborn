@@ -51,23 +51,6 @@ import { useAuthLogin } from "../../context/AuthContext";
 import { useNotify } from "../../context/NotifyContext";
 import { useRouter } from "next/router";
 
-type User = {
-  _id?: {
-    $oid: string;
-  };
-  bio: string;
-  city: string;
-  email: string;
-  name: string;
-  profile_img?: string;
-  password: string;
-  password_confirmation: string;
-  photographer: boolean;
-  services_price: number[];
-  specialization: string[];
-  state: string;
-};
-
 interface PhotographerProps {
   user: User;
 }
@@ -84,218 +67,17 @@ const signalColors = [
 ];
 
 export default function EditProfile({ user }: PhotographerProps) {
-  const router = useRouter();
-
-  let cookies = parseCookies();
-  let userSectionId = cookies["ramirez-user-id"];
-
-  const { userProfileImage } = useAuthLogin();
-
-  const { notifyError, notifySuccess } = useNotify();
-
-  const [hasInfoChanged, setHasInfoChanged] = useState(false);
-  const [editImageFormIsActive, setEditImageFormIsActive] = useState(false);
-  const [photoImageContent, setPhotoImageContent] = useState<File>();
-  const [specializationOptions, setSpecializationOptions] = useState<
-    Specialization[]
-  >([]);
-  const [selectedSpecializations, setSelectedSpecializations] = useState<
-    string[]
-  >(user.specialization ? user.specialization : []);
-  const [visiblePassword, setVisiblePassword] = useState(false);
-  const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
-  const [isPhotographer, setIsPhotographer] = useState(user.photographer);
-  const [minusValue, setMinusValue] = useState(
-    user.services_price?.length > 0 ? user.services_price[0] : 0
-  );
-  const [maxValue, setMaxValue] = useState(
-    user.services_price?.length > 0 ? user.services_price[1] : 0
-  );
-  const [editedUser, setEditedUser] = useState<User>({
-    bio: user.bio,
-    city: user.city,
-    state: user.state,
-    email: user.email,
-    name: user.name,
-    profile_img: user.profile_img,
-    password: "",
-    password_confirmation: "",
-    photographer: isPhotographer,
-    specialization: [],
-    services_price:
-      user.services_price?.length > 0 ? user.services_price : [0, 0],
-  } as User);
-
-  function verifyIfPhotographerHasImage() {
-    if (userProfileImage) {
-      return userProfileImage;
-    }
-    return "/default-user.png";
-  }
-
-  useEffect(() => {
-    if (hasInfoChanged) {
-      setHasInfoChanged(false);
-      router.push(`/editProfile/${userSectionId}`);
-    }
-  }, [hasInfoChanged, router, userSectionId]);
-
-  useEffect(() => {
-    async function getAllSpecializations() {
-      const data = await fetch("http://localhost:3001/specializations", {
-        method: "GET",
-      }).then((response) => response.json());
-      setSpecializationOptions(data);
-    }
-    getAllSpecializations();
-  }, []);
-
-  async function updatePhotographerImage() {
-    let cookies = parseCookies();
-    let token = cookies["ramirez-user"];
-
-    const newProfileImage = new FormData();
-    newProfileImage.append("image", photoImageContent!);
-
-    const res = await fetch(`http://localhost:3001/user/profile_image`, {
-      method: "PUT",
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        Authorization: `Bearer ${token}`,
-      },
-      body: newProfileImage,
-    })
-      .then((response) => response)
-      .catch((error) => error);
-
-    if (res.status === 500) {
-      notifyError("Não foi possível atualizar foto. Tente novamente!");
-      return;
-    }
-    setEditedUser({ ...editedUser, profile_img: res });
-    notifySuccess("Foto atualizada com sucesso! Aguarde alguns segundos");
-    setEditImageFormIsActive(false);
-    setHasInfoChanged(true);
-    setTimeout(() => {
-      router.reload();
-    }, 3000);
-  }
-
-  async function editPhotographerData(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    let cookies = parseCookies();
-    let token = cookies["ramirez-user"];
-
-    const modifiedUserToEdit = {
-      user: {
-        bio: editedUser.bio,
-        city: editedUser.city,
-        specialization: editedUser.specialization,
-        services_price: [minusValue, maxValue],
-        name: editedUser.name,
-        email: editedUser.email,
-        password: editedUser.password,
-        password_confirmation: editedUser.password_confirmation,
-        photographer: editedUser.photographer,
-        state: editedUser.state,
-      },
-    };
-
-    const res = await fetch(`http://localhost:3001/users/${userSectionId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(modifiedUserToEdit),
-    })
-      .then((result) => result.json())
-      .catch((error) => error.json());
-
-    if (res.error) {
-      notifyError(
-        "Não foi possível atualizar as informações. Verifique os campos!"
-      );
-      return;
-    }
-    notifySuccess("Informações atualizadas!");
-    setHasInfoChanged(true);
-  }
-
-  function handleVisiblePassword() {
-    setVisiblePassword(!visiblePassword);
-  }
-
-  function handleVisibleConfirmePassword() {
-    setVisibleConfirmPassword(!visibleConfirmPassword);
-  }
-
-  function minusValueChange(value: number) {
-    if (value < 0) {
-      setMinusValue(minusValue - 1 < 0 ? 0 : minusValue - 1);
-      return;
-    }
-    setMinusValue(minusValue + 1);
-  }
-
-  function maxValueChange(value: number) {
-    if (value < 0) {
-      setMaxValue(maxValue - 1 < 0 ? 0 : maxValue - 1);
-      return;
-    }
-    setMaxValue(maxValue + 1);
-  }
-
-  function addNewSpecialization(specialization: string) {
-    if (selectedSpecializations.length >= 3) {
-      return;
-    }
-
-    if (specialization.toLowerCase() === "nenhum") {
-      return;
-    }
-    setSelectedSpecializations([...selectedSpecializations, specialization]);
-    setEditedUser({
-      ...editedUser,
-      specialization: [...selectedSpecializations, specialization],
-    });
-  }
-
-  function removeSpecializationTag(specialization: string) {
-    let index = selectedSpecializations.indexOf(specialization);
-    if (index > -1) {
-      setSelectedSpecializations(
-        selectedSpecializations.filter((el, elIndex) => elIndex !== index)
-      );
-      setEditedUser({
-        ...editedUser,
-        specialization: editedUser.specialization.filter(
-          (el, elIndex) => elIndex !== index
-        ),
-      });
-    }
-  }
-
-  function selectSignalColors(): string {
-    if (selectedSpecializations?.length > 3) {
-      return signalColors[2].color;
-    }
-
-    return signalColors[selectedSpecializations?.length].color;
-  }
-
+  
   return (
     <Container initial="initial" animate="animate">
-      <Header userId={userSectionId} />
-      <ModalChangeImageContainer isActive={editImageFormIsActive}>
+      <Header userId={} />
+      <ModalChangeImageContainer isActive={}>
         <ModalChangeImage>
           <div data-name="photoEditImage">
             <Image
               src={
-                photoImageContent
-                  ? URL.createObjectURL(photoImageContent!)
+                
+                  ? URL.createObjectURL()
                   : verifyIfPhotographerHasImage()
               }
               objectFit="cover"
@@ -330,7 +112,7 @@ export default function EditProfile({ user }: PhotographerProps) {
         </ModalChangeImage>
       </ModalChangeImageContainer>
       <EditFormContainer variants={makeFadeInRightAnimation()}>
-        <EditForm onSubmit={editPhotographerData}>
+        <EditForm onSubmit={}>
           <ProfileBasicInfo>
             <ProfileImage onClick={() => setEditImageFormIsActive(true)}>
               <Image
@@ -359,7 +141,7 @@ export default function EditProfile({ user }: PhotographerProps) {
                 defaultValue={user.name}
                 placeholder="Nome"
                 onChange={(event) =>
-                  setEditedUser({ ...editedUser, name: event.target.value })
+                  setEditedUser({ ..., name: event.target.value })
                 }
               />
             </InputContainer>
@@ -380,7 +162,7 @@ export default function EditProfile({ user }: PhotographerProps) {
                 defaultValue={user.email}
                 placeholder="E-mail"
                 onChange={(event) =>
-                  setEditedUser({ ...editedUser, email: event.target.value })
+                  setEditedUser({ ..., email: event.target.value })
                 }
               />
             </InputContainer>
@@ -443,7 +225,7 @@ export default function EditProfile({ user }: PhotographerProps) {
                 pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                 onChange={(event) =>
                   setEditedUser({
-                    ...editedUser,
+                    ...,
                     password_confirmation: event.target.value,
                   })
                 }
@@ -457,21 +239,21 @@ export default function EditProfile({ user }: PhotographerProps) {
                 type="checkbox"
                 id="photographer"
                 name="photographer"
-                checked={isPhotographer}
+                checked={}
                 disabled={user.photographer ? true : false}
                 onChange={() => {
-                  setIsPhotographer(!isPhotographer);
+                  setIsPhotographer(!);
                   setEditedUser({
-                    ...editedUser,
-                    photographer: !isPhotographer,
+                    ...,
+                    photographer: !,
                   });
                 }}
               />
               <label htmlFor="photographer">Quero ser fotógrafo</label>
             </CheckBoxArea>
             <Panel
-              active={isPhotographer}
-              animate={isPhotographer ? "animate" : ""}
+              active={}
+              animate={ ? "animate" : ""}
             >
               <InputContainer variants={variantsItems}>
                 <label htmlFor="about"></label>
@@ -484,7 +266,7 @@ export default function EditProfile({ user }: PhotographerProps) {
                   minLength={0}
                   maxLength={1000}
                   onChange={(event) =>
-                    setEditedUser({ ...editedUser, bio: event.target.value })
+                    setEditedUser({ ..., bio: event.target.value })
                   }
                 />
               </InputContainer>
@@ -503,7 +285,7 @@ export default function EditProfile({ user }: PhotographerProps) {
                   placeholder="Especialização"
                   defaultValue="Especialização"
                   onChange={(event) => addNewSpecialization(event.target.value)}
-                  required={isPhotographer ? true : false}
+                  required={ ? true : false}
                 >
                   {specializationOptions.map((specialization) => (
                     <option
@@ -634,11 +416,11 @@ export default function EditProfile({ user }: PhotographerProps) {
                       placeholder="Cidade"
                       onChange={(event) =>
                         setEditedUser({
-                          ...editedUser,
+                          ...,
                           city: event.target.value,
                         })
                       }
-                      required={isPhotographer ? true : false}
+                      required={ ? true : false}
                     />
                   </InputContainer>
                   <InputContainer>
@@ -658,11 +440,11 @@ export default function EditProfile({ user }: PhotographerProps) {
                       placeholder="Estado"
                       onChange={(event) =>
                         setEditedUser({
-                          ...editedUser,
+                          ...,
                           state: event.target.value,
                         })
                       }
-                      required={isPhotographer ? true : false}
+                      required={ ? true : false}
                     />
                   </InputContainer>
                 </InputFlex>
