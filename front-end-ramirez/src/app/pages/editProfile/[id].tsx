@@ -3,6 +3,7 @@ import { Header } from "../../components/Header";
 
 
 import { 
+    Camera, 
     FilePlus,
     User,
     XCircle 
@@ -54,6 +55,26 @@ export default function EditProfile() {
                     </IconExclude>
                 </ModalChangeImage>
             </ModalChangeImageContainer>
+            <EditFormContainer variants={makeFadeInRightAnimation()}>
+                <EditForm onSubmit={() => {}}>
+                    <ProfileBasicInfo>
+                        <ProfileImage onClick={() => {}}>
+                            <Image 
+                                src={""} 
+                                objectFit="cover"
+                                width={150} 
+                                height={150}
+                                alt={"Foto de perfil"}
+                            />
+                            <UpdateImage>
+                                <Camera color={pallete.grayThree} size={30} weight="fill" />
+                            </UpdateImage>
+                        </ProfileImage>
+                        <h2>User name</h2>
+                    </ProfileBasicInfo>
+                    <Button type="submit">Confirmar</Button>
+                </EditForm>
+            </EditFormContainer>
         </Container>
     )
 }
