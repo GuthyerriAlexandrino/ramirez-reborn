@@ -50,6 +50,15 @@ const signalColors = [
 
 export default function EditProfile() {
 
+    const specializationOptions = [
+        {name: "Specialization 1"},
+        {name: "Specialization 2"},
+        {name: "Specialization 3"},
+        {name: "Specialization 4"}
+    ]
+
+    const selectedSpecializations = ["Specialization 1", "Specialization 2"]
+
     return (
         <Container
             initial='initial' 
@@ -214,7 +223,9 @@ export default function EditProfile() {
                                     onChange={(event) => {}}
                                     required={true}
                                 >
-                                 
+                                    {specializationOptions.map((specialization) => (
+                                        <option key={specialization.name} value={specialization.name}>{specialization.name}</option>
+                                    ))}
                                 </select>
                             </InputContainer>
                             <SpecializationTags variants={variants}>
@@ -222,7 +233,18 @@ export default function EditProfile() {
                                     Especializações {selectedSpecializations ? selectedSpecializations.length : "0" }/3
                                     <Signal color={pallete.green}/>
                                 </legend>
-                                
+                                {selectedSpecializations.map((specialization) => (
+                                    <motion.li
+                                        variants={variants}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        key={specialization} 
+                                        onClick={() => {}}
+                                    >
+                                        <span>{specialization}</span>
+                                        <XCircle size={20} weight="fill" />
+                                    </motion.li>
+                                ))}
                             </SpecializationTags>
                             <div>
                                 <InputContainer variants={variantsItems}>
