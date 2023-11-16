@@ -9,31 +9,110 @@ import {
   InputFlex,
   Panel,
 } from "./style";
+import { useNotify } from "../../context/NotifyContext";
 import { Buildings, Eye, EyeSlash, Key, User } from "phosphor-react";
 import Email from "../../assets/email.svg";
-
 import Image from "next/image";
 import { pallete } from "../../styles/colors";
+import  Router from "next/router";
+
+type User = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+  city: string;
+  state: string;
+  photographer: boolean
+}
 
 export function FormRegister() {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
+  const [newUser, setNewUser] = useState<User>({
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+    city: "",
+    state: "",
+    photographer: false 
+} as User);
+
+const {
+  notifySuccess,
+  notifyError
+} = useNotify();
+
   function handleVisiblePassword() {
     setVisiblePassword(!visiblePassword);
   }
+
   function handleVisibleConfirmePassword() {
     setVisibleConfirmPassword(!visibleConfirmPassword);
   }
+
+  async function handleSubmit(event: any) {
+    event.preventDefault();
+
+    if (newUser.password !== newUser.password_confirmation) {
+        notifyError("Falha no cadastro! Senha de confirmação inválida")
+        return;
+    }
+    
+    const user = {
+        user: {
+            name: newUser.name,
+            email: newUser.email,
+            password: newUser.password,
+            password_confirmation: newUser.password_confirmation,
+            city: newUser.photographer ? newUser.city : null,
+            state: newUser.photographer ? newUser.state : null,
+            photographer: newUser.photographer
+        }
+    }
+
+    const res = await fetch("http://127.0.0.1:3001/register", {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .catch(error => error);
+
+    if (res.error === "E11000") {
+        notifyError("Falha no cadastro! Esse e-mail já está cadastrado");
+        return;
+    }
+    if (res.error) {
+        notifyError("Falha no cadastro! Verifique os campos preenchidos");
+        return;
+    } else {
+        notifySuccess("Conta registrada!");
+        Router.push("/conclusion")
+    }
+}
+
   return (
-    <FormBody action="">
+    <FormBody action="" onSubmit={handleSubmit}>
       <h2>Criar a sua conta</h2>
       <InputContainer>
         <Icon align="left">
           <User size={24} color={pallete.blackFour} weight="fill" />
         </Icon>
         <label htmlFor="name"></label>
-        <input type="text" id="name" name="name" placeholder="Nome" required />
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          placeholder="Nome"            
+          onChange={(event) => setNewUser({...newUser, name: event.target.value})}
+          required 
+        />
       </InputContainer>
       <InputContainer>
         <Icon align="left">
@@ -45,6 +124,7 @@ export function FormRegister() {
           id="email"
           name="email"
           placeholder="E-mail"
+          onChange={(event) => setNewUser({...newUser, email: event.target.value})}
           required
         />
       </InputContainer>
@@ -67,6 +147,7 @@ export function FormRegister() {
           name="password"
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
           placeholder="Senha"
+          onChange={(event) => setNewUser({...newUser, password: event.target.value})}
           required
         />
       </InputContainer>
@@ -89,6 +170,7 @@ export function FormRegister() {
           name="password_confirmatiopn"
           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
           placeholder="Confirme sua senha"
+          onChange={(event) => setNewUser({...newUser, password_confirmation: event.target.value})} 
           required
         />
       </InputContainer>
@@ -101,8 +183,9 @@ export function FormRegister() {
             name="photographer"
             checked={isPhotographer}
             onChange={() => {
-              setIsPhotographer(!isPhotographer);
-            }}
+              setIsPhotographer(!isPhotographer); 
+              setNewUser({...newUser, photographer: !isPhotographer})
+          }}
           />
           <label htmlFor="photographer">Sou fotógrafo</label>
         </CheckBoxArea>
@@ -118,6 +201,7 @@ export function FormRegister() {
                 id="city"
                 name="city"
                 placeholder="Cidade"
+                onChange={(event) => setNewUser({...newUser, city: event.target.value})}
                 required={isPhotographer ? true : false}
               />
             </InputContainer>
@@ -131,6 +215,7 @@ export function FormRegister() {
                 id="state"
                 name="state"
                 placeholder="Estado"
+                onChange={(event) => setNewUser({...newUser, state: event.target.value})}
                 required={isPhotographer ? true : false}
               />
             </InputContainer>
