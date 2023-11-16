@@ -1,3 +1,4 @@
+"use client"
 import React, { 
   createContext,
   ReactNode,
@@ -87,10 +88,23 @@ export function AuthProvider({children}: AuthProviderProps) {
   }
 
   async function handleLogin({email, password}: User) {
-      // futura integração
-      const res = await fetch("", {})
-      .then(response => response.json())
-      .catch(error => console.log(error))
+    const user = {
+        user: {
+            email: email, 
+            password: password
+        }
+    }
+        
+    const res = await fetch("http://127.0.0.1:3001/login", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Acess-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(user)
+        })
+        .then(response => response.json())
+        .catch(error => console.log(error))
 
       if (res.error) {
           notifyError("Falha no login! Verifique os campos preenchidos.")
