@@ -16,7 +16,6 @@ import {
 import Link from "next/link";
 import { makeFadeInRightAnimation, stagger } from "../utils/animations";
 import { useAuthLogin } from "../context/AuthContext";
-import { useNotify } from "../context/NotifyContext";
 
 export default function LogIn()  {
     const [email, setEmail] = useState("");

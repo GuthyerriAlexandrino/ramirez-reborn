@@ -11,6 +11,7 @@ import { setCookie, parseCookies, destroyCookie } from "nookies";
 import { useNotify } from "./NotifyContext";
 import { ref, storage } from "../utils/keys/firebaseconfig";
 import { getDownloadURL } from "firebase/storage";
+import { useRouter, usePathname} from "next/navigation";
 
 type User = {
   email: string;
@@ -33,6 +34,8 @@ type AuthProviderProps = {
 
 export function AuthProvider({children}: AuthProviderProps) {
   const [userProfileImage, setUserProfileImage] = useState("");
+  const router = useRouter();
+  const path = usePathname();
 
   const {
       notifySuccess,
@@ -44,8 +47,8 @@ export function AuthProvider({children}: AuthProviderProps) {
       const token = cookies['ramirez-user']
 
       if (token) {
-          if (Router.asPath === "/login") {
-              Router.push("/search")
+          if (path === "/login") {
+            router.push("/search")
           }
           // getProfileImage();
       } 
@@ -115,7 +118,7 @@ export function AuthProvider({children}: AuthProviderProps) {
           setCookie(undefined, "ramirez-user-id", res.user.$oid, {
               expires: new Date(res.exp)
           })
-  
+            
           notifySuccess("Login feito com sucesso!")
           Router.push("/search")
       }

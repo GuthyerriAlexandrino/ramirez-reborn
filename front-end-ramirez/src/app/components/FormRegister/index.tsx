@@ -15,6 +15,7 @@ import Email from "../../assets/email.svg";
 import Image from "next/image";
 import { pallete } from "../../styles/colors";
 import  Router from "next/router";
+import { useRouter } from "next/navigation";
 
 type User = {
   name: string;
@@ -27,6 +28,7 @@ type User = {
 }
 
 export function FormRegister() {
+  const router = useRouter();
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(false);
@@ -93,7 +95,7 @@ const {
         return;
     } else {
         notifySuccess("Conta registrada!");
-        Router.push("/conclusion")
+        router.push("/conclusion")
     }
 }
 
