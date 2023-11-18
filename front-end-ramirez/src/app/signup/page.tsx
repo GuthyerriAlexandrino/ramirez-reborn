@@ -6,8 +6,8 @@ import {
   SignUpAside,
   SignUpFormContainer,
 } from "./styles";
-import Logo from "../Assets/logo.svg";
-import ArrowBack from "../Assets/arrow-back.svg";
+import Logo from "../assets/logo.svg";
+import ArrowBack from "../assets/arrow-back.svg";
 import Link from "next/link";
 import { makeFadeInRightAnimation, stagger } from "../utils/animations";
 import { FormRegister } from "../components/FormRegister";
