@@ -1,11 +1,5 @@
+"use client"
 import { useState } from "react";
-
-//import Logo from "../../../assets/logo.svg";
-//import Password from "../../../assets/password.svg";
-//import Email from "../../../assets/email.svg";
-//import EyeVisible from "../../../assets/ant-design-eye-visible.svg";
-//import EyeInvisible from "../../../assets/ant-design_eye-invisible-filled.svg";
-
 import { 
     Container,
     LogInAside,
@@ -19,20 +13,18 @@ import {
     Icon, 
     InputContainer 
 } from "../styles/form";
-
-
-
-
-
 import Link from "next/link";
-import Image from "next/image";
-import { makeFadeInRightAnimation, stagger } from "../../../utils/animations";
-
+import { makeFadeInRightAnimation, stagger } from "../utils/animations";
+import { useAuthLogin } from "../context/AuthContext";
 
 export default function LogIn()  {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [visible, setVisible] = useState(false);
+
+    const {
+        handleLogin,
+    } = useAuthLogin();
 
     function handleVisiblePassword() {
         setVisible(!visible);
@@ -40,7 +32,7 @@ export default function LogIn()  {
 
     async function handleSubmit(event: any) {
         event.preventDefault();
-        //await handleLogin({email, password});
+        await handleLogin({email, password});
     }
 
     return (

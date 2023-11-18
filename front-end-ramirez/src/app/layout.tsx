@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 };
 
 import StyledComponentsRegistry from "../lib/registry";
+import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "./context/AuthContext";
+import { NotifyProvider } from "./context/NotifyContext";
+import { Component } from "react";
 
 export default function RootLayout(props: React.PropsWithChildren) {
   return (
@@ -18,7 +22,16 @@ export default function RootLayout(props: React.PropsWithChildren) {
       <body className={inter.className}>
         <StyledComponentsRegistry>
           <GlobalStyles />
-          {props.children}
+          <NotifyProvider>
+            <AuthProvider>
+              {props.children}
+              <ToastContainer />
+              
+                {/* <AnimatePresence exitBeforeEnter>
+                  <Component {...pageProps} />
+                </AnimatePresence> */}
+            </AuthProvider>
+          </NotifyProvider>
         </StyledComponentsRegistry>
       </body>
     </html>
