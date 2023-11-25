@@ -1,18 +1,22 @@
-import { UserPhotographer } from "@/types/userPhotographer"
+import { UserPhotographer } from "@/types/userPhotographer";
 import {
   CardContainer,
   CardContent,
   FilterImage,
   ListSpecialization,
-} from "./style"
+} from "./style";
 
 type photographerCardProps = {
-  user: UserPhotographer
-}
+  user: UserPhotographer;
+};
 
 export function PhotographerCard({ user }: photographerCardProps) {
   return (
-    <CardContainer imageUrl={"https://thispersondoesnotexist.com/"}>
+    <CardContainer
+      imageUrl={
+        user.profile_img ? user.profile_img : "/default-photo-profile.png"
+      }
+    >
       <FilterImage />
       <CardContent>
         <h3>{user.name}</h3>
@@ -34,5 +38,5 @@ export function PhotographerCard({ user }: photographerCardProps) {
         </div>
       </CardContent>
     </CardContainer>
-  )
+  );
 }

@@ -9,7 +9,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion }from "framer-motion";
 import { GetServerSideProps } from "next";
 import { Header } from "../../../components/Header";
-import { UserP } from "../../../search";
+import { UserP } from "../../../search/page";
 import { MenuButton } from "../../../components/MenuButton";
 import { PublishPhoto } from "../../../components/PublishPhoto";
 import { getDownloadURL } from "firebase/storage";
