@@ -57,6 +57,7 @@ export function PublishPhoto({handlePopUp}: PublishPhotoProps) {
         let cookies = parseCookies();
         let token = cookies["ramirez-user"]
         let userSectionId = cookies["ramirez-user-id"]
+        console.log(cookies);
         
         const res = await fetch("http://127.0.0.1:3001/posts", {
             method: "POST",
