@@ -110,7 +110,7 @@ export function PublishPhoto({handlePopUp}: PublishPhotoProps) {
                 </IconArea>
                 <Typography>Postar uma nova foto</Typography>
                 <FormArea 
-                    action="http://localhost:3001" 
+                    action="http://127.0.0.1:3001" 
                     encType="multipart/form-data"
                     method="post" 
                     onSubmit={addNewPost}
