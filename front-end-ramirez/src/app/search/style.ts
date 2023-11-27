@@ -1,16 +1,16 @@
-import { motion } from "framer-motion"
-import styled from "styled-components"
-import { pallete } from "../styles/colors"
+import { motion } from "framer-motion";
+import styled from "styled-components";
+import { pallete } from "../styles/colors";
 
 interface LocationProps {
-  isActive: boolean
+  isActive: boolean;
 }
 
 export const Container = styled(motion.section)`
   min-height: 100vh;
   height: 100%;
   background-color: ${pallete.blackOne};
-`
+`;
 
 export const SearchPhotographerContainer = styled.main`
   display: flex;
@@ -28,7 +28,7 @@ export const SearchPhotographerContainer = styled.main`
     text-align: left;
     color: ${pallete.whiteOne};
   }
-`
+`;
 
 export const SearchInputContainer = styled.section`
   display: flex;
@@ -43,8 +43,21 @@ export const SearchInputContainer = styled.section`
     justify-content: flex-start;
     width: 100%;
     margin-bottom: 1.25rem;
+
+    @media screen and (max-width: 500px) {
+      flex-direction: column;
+    }
   }
-`
+`;
+
+export const InputContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  margin-right: 1.25rem;
+`;
 
 export const InputName = styled.input`
   width: 100%;
@@ -54,13 +67,26 @@ export const InputName = styled.input`
   border-radius: 10px;
   padding: 0.75rem;
   margin-right: 1.813rem;
-`
+
+  @media screen and (max-width: 500px) {
+    width: 93%;
+    margin-right: 0rem;
+  }
+`;
 
 export const AditionalInputs = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-`
+
+  @media screen and (max-width: 1102px) {
+    gap: 10px 0;
+  }
+
+  @media screen and (max-width: 870px) {
+    flex-direction: column;
+  }
+`;
 
 export const PriceRangeContainer = styled.div`
   display: flex;
@@ -74,7 +100,8 @@ export const PriceRangeContainer = styled.div`
     margin-right: 0px;
     gap: 5px 0;
   }
-`
+`;
+
 export const PriceRange = styled.div`
   display: flex;
   align-items: center;
@@ -86,7 +113,12 @@ export const PriceRange = styled.div`
   color: ${pallete.whiteOne};
   border-radius: 5px;
   background-color: ${pallete.blackFour};
-`
+
+  @media screen and (max-width: 870px) {
+    width: 100%;
+    margin-right: 0;
+  }
+`;
 
 export const GenericInput = styled.input`
   width: 125px;
@@ -96,14 +128,23 @@ export const GenericInput = styled.input`
   border-radius: 10px;
   padding-left: 10px;
   padding-right: 5px;
-`
+
+  @media screen and (max-width: 870px) {
+    width: 100%;
+    margin-right: 0;
+  }
+`;
 
 export const Divider = styled.div`
   width: 1.25rem;
   height: 0.125rem;
   margin: 0 0.25rem;
   background-color: ${pallete.grayOne};
-`
+
+  @media screen and (max-width: 870px) {
+    display: none;
+  }
+`;
 
 export const SearchButton = styled.button`
   font-family: "Inter", sans-serif;
@@ -116,12 +157,16 @@ export const SearchButton = styled.button`
   background-color: ${pallete.turquoiseOne};
   transition: all 0.2s ease;
   cursor: pointer;
-  color: #000000;
 
   &:hover {
     filter: brightness(0.92);
   }
-`
+
+  @media screen and (max-width: 500px) {
+    width: 93%;
+    margin-top: 1rem;
+  }
+`;
 
 export const LocationAccordion = styled.div<LocationProps>`
   position: relative;
@@ -144,6 +189,10 @@ export const LocationAccordion = styled.div<LocationProps>`
     color: ${pallete.whiteOne};
     border-radius: 5px;
     background-color: ${pallete.blackFour};
+
+    @media screen and (max-width: 870px) {
+      width: 100px;
+    }
 
     div {
       position: absolute;
@@ -179,8 +228,16 @@ export const LocationAccordion = styled.div<LocationProps>`
     overflow: hidden;
     transition: 0.5s;
     overflow-x: none;
+
+    @media screen and (max-width: 870px) {
+      width: ${(props) => (props.isActive ? "100%" : 0)};
+    }
   }
-`
+
+  @media screen and (max-width: 870px) {
+    width: 93%;
+  }
+`;
 
 export const PhotographersList = styled(motion.div)`
   display: flex;
@@ -188,4 +245,4 @@ export const PhotographersList = styled(motion.div)`
   justify-content: center;
   width: 100%;
   gap: 3.75rem;
-`
+`;

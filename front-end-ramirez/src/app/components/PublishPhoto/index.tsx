@@ -21,19 +21,18 @@ import Image from "next/image";
 import { parseCookies } from "nookies";
 import { formatBytes } from "../../utils/formatBytes";
 import { useNotify } from "../../context/NotifyContext";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+// import { useRouter } from "next/router";
 
 type PublishPhotoProps = {
     handlePopUp: (value: boolean) => void;
 }
 
 export function PublishPhoto({handlePopUp}: PublishPhotoProps) {
-
-    const router = useRouter();
-
     const [photoImageContent, setPhotoImageContent] = useState<File>();
     const [photoPrice, setPhotoPrice] = useState<number | null>(null);
     const [photoTitle, setPhotoTitle] = useState("");
+    const router = useRouter();
 
     const {
         notifyError,
@@ -59,7 +58,7 @@ export function PublishPhoto({handlePopUp}: PublishPhotoProps) {
         let token = cookies["ramirez-user"]
         let userSectionId = cookies["ramirez-user-id"]
         
-        const res = await fetch("http://localhost:3001/posts", {
+        const res = await fetch("http://127.0.0.1:3001/posts", {
             method: "POST",
             headers: {
                 'Access-Control-Allow-Origin': '*',
