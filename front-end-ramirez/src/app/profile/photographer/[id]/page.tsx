@@ -7,15 +7,13 @@ import { useInView } from "react-intersection-observer";
 import { useAnimation } from "framer-motion";
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { motion }from "framer-motion";
-import { GetServerSideProps } from "next";
 import { Header } from "../../../components/Header";
 import { UserP } from "../../../search/page";
 import { MenuButton } from "../../../components/MenuButton";
 import { PublishPhoto } from "../../../components/PublishPhoto";
 import { getDownloadURL } from "firebase/storage";
 import { ref as refFirebase, storage } from "../../../utils/keys/firebaseconfig";
-import { useAuthLogin } from "../../../context/AuthContext";
-import Router from "next/router";
+import { useParams } from "next/navigation";
 import { 
     Container, 
     ProfileAbout, 
@@ -36,62 +34,6 @@ import {
     ImageLazyLoad
 } from "./style";
 
-let photos = [
-    {id:1, width: 640, height: 960},
-    {id:2, width: 1920, height: 2880},
-    {id:3, width: 2400, height: 3600},
-    {id:4, width: 640, height: 425},
-    {id:5, width: 1440, height: 1277},
-    {id:6, width: 2400, height: 1596},
-    {id:7, width: 640, height: 960},
-    {id:8, width: 1920, height: 2880},
-    {id:9, width: 2400, height: 3600},
-    {id:10, width: 640, height: 425},
-    {id:11, width: 1920, height: 1277},
-    {id: 12, width: 2400, height: 1596}
-]
-
-// futura integração
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//     const { id } = context.params!;
-//     const { ["ramirez-user"]: token } = parseCookies(context);
-
-//     if (!token) {
-//         return {
-//             redirect: {
-//                 destination: '/login',
-//                 permanent: false,
-//             }
-//         }
-//     }
-
-//     //futura integração
-//     const data: UserP = await fetch(``, {}).then(res => res.json());
-
-//     // mock
-//     const user = {
-//         _id: data._id ?? "1",
-//         name: data.name ?? "Isa",
-//         city: data.city ?? "Pedro II",
-//         state: data.state ?? "PI",
-//         bio: data.bio ?? "Sou lindo",
-//         specialization: data.specialization ?? "comer",
-//         services_price: data.services_price ?? "caro",
-//         profile_img: data.profile_img ?? "sou emo",
-//         views: data.views ?? "0"
-//     }
-
-//     return {
-//         props: {
-//             user,
-//         },
-//     }
-// }
-
-interface PhotographerProps {
-    user: UserP;
-}
-
 const stagger = {
     animate: {
         transition: {
@@ -107,7 +49,8 @@ interface Post {
     image: string;
 }
 
-export default function ProfilePhotographer({user}: PhotographerProps) {
+export default function ProfilePhotographer() {
+    const [user,  setUser] = useState<UserP>({} as UserP) ;
     const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [allPostsList, setAllPostsList] = useState<Post[]>([]);
     const [profileImage, setProfileImage] = useState<string | null>("");
@@ -116,28 +59,50 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
     const cookies = parseCookies();
     const userSectionId = cookies["ramirez-user-id"]
     const token = cookies["ramirez-user"]
-
-    const mockUser = {
-        _id: {
-            $oid: "1"
-        },
-        name: "Isa",
-        city: "Pedro II",
-        state: "PI",
-        bio: "Sou lindo",
-        specialization: [],
-        profile_img: "",
-        services_price: [],
-        views: 0
-    }
+    const { id }  = useParams();
+    // const { objetoSerializado } = useParams();
+//    const meuObjeto = JSON.parse(decodeURIComponent(objetoSerializado));
 
     function handlePopUpScreen(value: boolean) {
         setPopupIsOpen(value);
     }
 
+    async function getUser() {
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                }
+            }
+        }
+
+        const data: UserP = await fetch(`http://127.0.0.1:3001/user/${id}`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": `Bearer ${token}`
+            }
+        }).then(res => res.json());
+
+        const currenUser = {
+            _id: data._id ?? null,
+            name: data.name ?? null,
+            city: data.city ?? null,
+            state: data.state ?? null,
+            bio: data.bio ?? null,
+            specialization: data.specialization ?? null,
+            services_price: data.services_price ?? null,
+            profile_img: data.profile_img ?? null,
+            views: data.views ?? null
+        }
+
+        setUser(currenUser);
+    }
+
     async function getProfileImage() {
-        if (mockUser.profile_img === "") {
-            setProfileImage("/default-user.png")
+        if (user.profile_img === "") {
+            setProfileImage("/default-photo-profile.png")
             return;
         }
 
@@ -148,11 +113,15 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
     }
 
     async function getAllPostsFromUser() {
-        //futura integração
-        // const allPosts: Post[] = await fetch(``, {}).then(response => response.json())
-        // .catch(error => error.json());
+        const allPosts: Post[] = await fetch(`http://127.0.0.1:3001/posts/${user._id.$oid}`, {
+            method: "GET",
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Authorization': `Bearer ${token}`
+            }
+        }).then(response => response.json())
 
-        await generateImagesLinks([])
+        await generateImagesLinks(allPosts)
     }
 
     async function generateImagesLinks(allPosts: Post[]) {
@@ -169,9 +138,17 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
     }
 
     useEffect(() => {
+        try {
+            setUser(JSON.parse(decodeURIComponent(id)))
+        } catch (error) {
+            getUser();
+        }
+    }, [])
+
+    useEffect(() => {
         getProfileImage();
         getAllPostsFromUser();
-    }, [])
+    }, [user])
 
     useEffect(() => {
         if (inView) {
@@ -199,7 +176,7 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
             exit={{ x: "100%" }}
         >
             <Header userId={userSectionId}/>
-            <MenuButton id={mockUser?._id?.$oid} openModal={() => handlePopUpScreen(true)}/>
+            <MenuButton id={user?._id?.$oid} openModal={() => handlePopUpScreen(true)}/>
             <ProfileInfoContainer>
                 <ProfileInfo>
                     <ProfileAside>
@@ -214,25 +191,25 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                             />
                         </ProfileImage>
                         <ProfileName>
-                            {mockUser?.name}
+                            {user?.name}
                         </ProfileName>
                         <ProfileLocation>
-                            {mockUser?.city} - {mockUser?.state}
+                            {user?.city} - {user?.state}
                         </ProfileLocation>
                         <Divider vertical={false} height={2}/>
                         <ProfileViews>
                             <p>
                                 Esse perfil recebeu <br/>
                                 <span>
-                                    {mockUser?.views <= 1 ? `${mockUser?.views} visualização` : `${mockUser?.views} visualizações`}
+                                    {user?.views <= 1 ? `${user?.views} visualização` : `${user?.views} visualizações`}
                                 </span>
                             </p>
                         </ProfileViews>
                     </ProfileAside>
                     <ProfileAbout>
                         <h2>Sobre mim</h2>
-                        <p data-bio={mockUser?.bio !== "" ? "hasBio" : 'noBio'}>
-                            {mockUser?.bio !== "" ? mockUser?.bio : "Nenhuma informação escrita..."}
+                        <p data-bio={user?.bio !== "" ? "hasBio" : 'noBio'}>
+                            {user?.bio !== "" ? user?.bio : "Nenhuma informação escrita..."}
                         </p>
                     </ProfileAbout>
                     <ProfileCareer>
@@ -240,15 +217,15 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                         <CareerDataContainer>
                             <CareerData isRight={false}>
                                 <h3>Especialização</h3>
-                                {mockUser?.specialization?.map((item, index) => (
+                                {user?.specialization?.map((item, index) => (
                                     <span key={index}>{item}</span>
                                 ))}
                             </CareerData>
                             <Divider vertical={true} height={90}/>
                             <CareerData isRight={true}>
                                 <h3>Valor de Serviço</h3>
-                                {mockUser?.services_price?.length >  0 ? (
-                                    <span>R$ {mockUser?.services_price[0]} -  R$ {mockUser?.services_price[1]} / foto</span>
+                                {user?.services_price?.length >  0 ? (
+                                    <span>R$ {user?.services_price[0]} -  R$ {user?.services_price[1]} / foto</span>
                                 ) : (
                                     <span>Sem informações</span>
                                 )}
@@ -265,7 +242,7 @@ export default function ProfilePhotographer({user}: PhotographerProps) {
                      {Array.from(allPostsList).map((id) => (
                         // eslint-disable-next-line @next/next/link-passhref
                         <Link 
-                            href={`/profile/photographer/${mockUser?._id?.$oid}/post/${id._id.$oid}`} 
+                            href={`/profile/photographer/${user?._id?.$oid}/post/${id._id.$oid}`} 
                             key={id._id.$oid} 
                         >
                             <motion.div 

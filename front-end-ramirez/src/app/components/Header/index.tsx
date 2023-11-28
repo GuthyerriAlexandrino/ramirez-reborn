@@ -49,7 +49,7 @@ export function Header({userId}: HeaderProps) {
                         <li>
                             <Link href={`/profile/photographer/${userId}`}>
                                 <Image
-                                    src={userProfileImage ? userProfileImage : "/default-user.png"}
+                                    src={userProfileImage ? userProfileImage : "/default-photo-profile.png"}
                                     // layout="fill"
                                     objectFit="cover"
                                     width={45}
