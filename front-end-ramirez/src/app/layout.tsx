@@ -11,10 +11,9 @@ export const metadata: Metadata = {
 };
 
 import StyledComponentsRegistry from "../lib/registry";
-import { ToastContainer } from "react-toastify";
 import { AuthProvider } from "./context/AuthContext";
 import { NotifyProvider } from "./context/NotifyContext";
-import { Component } from "react";
+import ToastContainerWrapper from "./context/ToastContainerWrapper";
 
 export default function RootLayout(props: React.PropsWithChildren) {
   return (
@@ -25,11 +24,7 @@ export default function RootLayout(props: React.PropsWithChildren) {
           <NotifyProvider>
             <AuthProvider>
               {props.children}
-              <ToastContainer />
-              
-                {/* <AnimatePresence exitBeforeEnter>
-                  <Component {...pageProps} />
-                </AnimatePresence> */}
+              <ToastContainerWrapper />
             </AuthProvider>
           </NotifyProvider>
         </StyledComponentsRegistry>
