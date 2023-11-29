@@ -55,6 +55,7 @@ interface Post {
 
 export default function ProfilePhotographer() {
   const [user, setUser] = useState<UserP>({} as UserP);
+  const [isObject, setIsObject] = useState<Boolean>(false);
   const [profileImage, setProfileImage] = useState<string | null>("");
   const [popupIsOpen, setPopupIsOpen] = useState(false);
   const [allPostsList, setAllPostsList] = useState<Post[]>([]);
@@ -143,7 +144,7 @@ export default function ProfilePhotographer() {
       },
     }).then((res) => res.json());
 
-    const foresRef = refFirebase(storage, data.profile_img);
+    const foresRef = refFirebase(storage, isObject ? user.profile_img : data.profile_img);
     await getDownloadURL(foresRef)
       .then((url) => setProfileImage(url))
       .catch((error) => console.log(error));
@@ -156,6 +157,7 @@ export default function ProfilePhotographer() {
   useEffect(() => {
     try {
       setUser(JSON.parse(decodeURIComponent(id)));
+      setIsObject(true)
     } catch (error) {
       getUser();
     }
