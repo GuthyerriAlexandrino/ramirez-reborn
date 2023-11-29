@@ -12,20 +12,14 @@ import {
 
 //import Image01 from "../../Assets/photographer-profile.png";
 import { pallete } from "../../styles/colors";
-import { useEffect, useState } from "react";
-import { Comment } from "../../pages/profile/photographer/[id]/post/[post]";
+import {  useState } from "react";
+import { Comment } from "../../profile/photographer/[id]/post/[post]/page";
 import { parseCookies } from "nookies";
-import { ref, storage } from "../../utils/keys/firebaseconfig";
-import { getDownloadURL } from "firebase/storage";
 import { formatDate } from "../../utils/formatData";
 
-interface CommentUser {
-    name: string;
-    profile_img: string;
-}
 interface CommentaryCardProps {
     id: string;
-    like: string;
+    like: boolean;
     content: Comment;
     incrementLikes: (commentaryId: string) => void;
     deleteCommentary: (commentaryId: string) => void;
@@ -34,41 +28,10 @@ interface CommentaryCardProps {
 export function CommentaryCard({id, like, content, incrementLikes, deleteCommentary}: CommentaryCardProps) {
 
     const [isLikeButtonClicked, setIsLikeButtonClicked] = useState(false);
-    const [commentUser, setCommentUser] = useState<CommentUser>({} as CommentUser);
     const [profileImage, setProfileImage] = useState<string | null>();
 
     let cookies = parseCookies();
-    let token = cookies["ramirez-user"];
     let userSectionId = cookies["ramirez-user-id"];
-
-    async function getUserData() {
-
-        //futura implementação
-        const data: CommentUser = await fetch(``, {}).then(async result => {
-            let user = await result.json();
-
-            console.log(user)
-
-            if (user.profile_img !== "") {
-                const foresRef = ref(storage, user.profile_img);
-                await getDownloadURL(foresRef)
-                .then(url => setProfileImage(url))
-                .catch(error => console.log(error));
-            }
-
-
-            return user;
-        })
-        .catch(error => error)
-
-        setCommentUser(data)
-    }
-
-
-    useEffect(() => {
-        getUserData();
-    }, [])
-
 
     return (
         <Container>
@@ -86,7 +49,7 @@ export function CommentaryCard({id, like, content, incrementLikes, deleteComment
                             />
                         ) : (
                             <Image 
-                                src={"/default-user.png"}
+                                src={"/default-photo-profile.png"}
                                 width={50}
                                 height={50}
                                 layout="responsive"
@@ -96,13 +59,13 @@ export function CommentaryCard({id, like, content, incrementLikes, deleteComment
                         )}
                     </CommentaryImage>
                     <CommentaryDetail>
-                        <span>{commentUser.name}</span>
+                        <span>{content.user_name}</span>
                         <span>{formatDate(content.created_at)}</span>
                     </CommentaryDetail>
                 </CommentaryProfile>
                 <IconsArea>
                     <Heart 
-                        color={(like === userSectionId) ? pallete.red : pallete.grayOne} 
+                        color={like ? pallete.red : pallete.grayOne} 
                         size={30} 
                         weight="fill"
                         onClick={() => {

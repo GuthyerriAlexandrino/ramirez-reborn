@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { pallete } from "../../../../styles/colors";
+import { pallete } from "../../../../../styles/colors";
 
 export const Container = styled.section`
     min-height: 100vh;
@@ -39,9 +39,8 @@ export const PostImage = styled.div`
     border-radius: 10px;
 
     img {
-        max-width:200px;
         max-height:150px;
-        width: auto;
+        width: 100%;
         height: auto;
         border-radius: 10px;
     }
