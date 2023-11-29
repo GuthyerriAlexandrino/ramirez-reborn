@@ -51,13 +51,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, []);
 
-  // futura integração
   async function getProfileImage() {
     const cookies = parseCookies();
     const token = cookies["ramirez-user"];
     const id = cookies["ramirez-user-id"];
 
-    const data = await fetch("", {}).then((res) => res.json());
+    const data = await fetch(`http://localhost:3001/user/${id}`, {
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
 
     if (data.profile_img === "") {
       return;
