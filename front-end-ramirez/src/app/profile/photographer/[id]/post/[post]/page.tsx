@@ -1,3 +1,4 @@
+"use client"
 import { 
     Container, 
     ContentFooter, 
@@ -18,55 +19,23 @@ import { TrashSimple, Chat, Heart } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { getDownloadURL } from "firebase/storage";
 import Image from "next/image";
-import { Header } from "../../../../components/Header";
-import { Loading } from "../../../../components/Loading";
-import { pallete } from "../../../../styles/colors";
-import { CommentaryCard } from "../../../../components/ComentaryCard";
+import { Header } from "../../../../../components/Header";
+import { Loading } from "../../../../../components/Loading";
+import { CommentaryCard } from "../../../../../components/ComentaryCard";
 import { parseCookies } from "nookies";
-import { storage, ref } from "../../../../utils/keys/firebaseconfig";
-import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
-import { useNotify } from "../../../../context/NotifyContext";
+import { storage, ref } from "../../../../../utils/keys/firebaseconfig";
+import { useParams, useRouter } from "next/navigation";
+import { useNotify } from "../../../../../context/NotifyContext";
+import { pallete } from "../../../../../styles/colors";
+import { UserP } from "@/app/search/page";
 
 interface Post {
     price: number,
     title: string,
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id, post } = context.params!;
-    const { ["ramirez-user"]: token } = parseCookies(context);
-
-    if (!token) {
-        return {
-            redirect: {
-                destination: '/login',
-                permanent: false,
-            }
-        }
-    }
-
-    //integração futura
-    const data: Post = await fetch(``, {}).then(res => res.json());
-
-    const postContent = {
-        price: data.price ?? null,
-        title: data.title ?? null,
-    }
-
-    return {
-        props: {
-            postContent,
-        },
-    }
-}
-
 interface PostImage {
     image: string;
-}
-
-interface PostScreenProps {
-    postContent: Post
 }
 
 export interface Comment {
@@ -78,24 +47,18 @@ export interface Comment {
     post_id: {
         $oid: string;
     },
-    likes: {
-        _id: {
-            $oid: string
-        },
-        user_id: {
-            $oid: string
-        }
-    },
+    likes: [],
     user_id: {
         $oid: string;
-    }
+    },
+    user_name: string
 }
 
-export default function Post({ postContent }: PostScreenProps) {
-
+export default function Post() {
     const router = useRouter();
-
+    const { id, post } =  useParams();
     const [image, setImage] = useState<any>();
+    const [postContent,  setPostContent] = useState<Post>({} as Post) ;
     const [userCommentary, setUserCommentary] = useState("");
     const [commentsList, setCommentsList] = useState<Comment[]>([]);
 
@@ -106,9 +69,35 @@ export default function Post({ postContent }: PostScreenProps) {
 
     let cookies = parseCookies();
     let userSectionId = cookies["ramirez-user-id"];
+    let token = cookies["ramirez-user"];
+
+    async function getPost() {
+        if (!token) {
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                }
+            }
+        }
+
+        const data: Post = await fetch(`http://127.0.0.1:3001/post/${id}/${post}`, {
+            method: "GET",
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Authorization": `Bearer ${token}`
+            }
+        }).then(res => res.json());
+
+        const currentPostContent = {
+            price: data.price ?? null,
+            title: data.title ?? null,
+        }
+
+        setPostContent(currentPostContent);      
+    }
 
     async function getImageFromApi() {
-
         const userId = window?.location.pathname.split("/")[3];
         const postId = window?.location.pathname.split("/")[5];
 
@@ -147,6 +136,7 @@ export default function Post({ postContent }: PostScreenProps) {
         }).then(result => result.json())
         .catch(error => error.json())
 
+        router.push(`/profile/photographer/${userSectionId}`);
     }
 
     async function getComments() {
@@ -163,10 +153,12 @@ export default function Post({ postContent }: PostScreenProps) {
         }).then(result => result.json())
         .catch(error => error.json())
 
+        console.log("commentsList", commentsList);
         setCommentsList(data)
     }
 
     async function sendCommentaryToPost() {
+        setUserCommentary(null);
 
         if (userCommentary === "") {
             notifyError("Error! Comentário está vazio!");
@@ -209,9 +201,8 @@ export default function Post({ postContent }: PostScreenProps) {
         const postId = window?.location.pathname.split("/")[5];
 
         const incrementLike = {
-            comments: {
+            comment: {
                 post_id: postId,
-                author_id: userId,
                 id: commentaryId
             }
         }
@@ -226,7 +217,7 @@ export default function Post({ postContent }: PostScreenProps) {
         }).then(response => response)
         .catch(error => console.log(error))
 
-        console.log(res)
+        getComments();
     }
 
     async function deleteACommentaryFromPost(commentaryId: string) {
@@ -234,31 +225,26 @@ export default function Post({ postContent }: PostScreenProps) {
         let cookies = parseCookies();
         let token = cookies["ramirez-user"];
 
-        const commentaryToDelete = {
-            comment: {
-                post_id: router.query.post,
-                author_id: userSectionId
-            }
-        }
-
         const deletedComment: Comment = await fetch(`http://127.0.0.1:3001/comments/${commentaryId}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(commentaryToDelete)
+            }
         }).then(response => response.json())
         .catch(error => console.log(error))
 
-        console.log(deletedComment)
-
-        setCommentsList(commentsList.filter(data => data?._id?.$oid !== deletedComment?._id?.$oid))
+        getComments();
+        // setCommentsList(commentsList.filter(data => data?._id?.$oid !== deletedComment?._id?.$oid))
     }
 
     useEffect(() => {
         getImageFromApi()
         getComments()
-    }, [commentsList?.length])
+    }, [postContent, commentsList?.length])
+
+    useEffect(() => {
+        getPost();
+    }, [])
 
     return (
         <Container>
@@ -288,24 +274,15 @@ export default function Post({ postContent }: PostScreenProps) {
                                 {postContent.price ? ` - R$ ${postContent.price}` : ""}
                             </span>
                             <IconsArea>
-                                <TrashSimple 
-                                    color={pallete.grayOne} 
-                                    size={30} 
-                                    weight="fill"
-                                    style={{cursor: "pointer"}}
-                                    onClick={() => deletePost()}
-                                />
-                                <Chat 
-                                    color={pallete.grayOne} 
-                                    size={30} weight="fill" 
-                                    style={{marginLeft: "1.25rem", cursor: "pointer"}} 
-                                />
-                                <Heart 
-                                    color={pallete.grayOne} 
-                                    size={30} 
-                                    weight="fill" 
-                                    style={{marginLeft: "1.25rem", cursor: "pointer"}}
-                                />
+                                {userSectionId === id &&
+                                    <TrashSimple 
+                                        color={pallete.grayOne} 
+                                        size={30} 
+                                        weight="fill"
+                                        style={{cursor: "pointer"}}
+                                        onClick={() => deletePost()}
+                                    />
+                                }
                             </IconsArea>
                         </ContentFooter>
                     </PostContent>
@@ -315,6 +292,7 @@ export default function Post({ postContent }: PostScreenProps) {
                             cols={50}
                             minLength={0}
                             maxLength={500} 
+                            value={userCommentary}
                             onChange={(event) => setUserCommentary(event.target.value)}
                         />
                         <CommentaryButton
@@ -331,7 +309,7 @@ export default function Post({ postContent }: PostScreenProps) {
                         <FeedBackList>
                             {commentsList?.map(comment => (
                                 <CommentaryCard
-                                    like={comment?.likes?.user_id?.$oid!}
+                                    like={!!comment?.likes?.filter((user) => user.user_id?.$oid === userSectionId )}
                                     content={comment}
                                     key={comment._id.$oid}
                                     id={comment._id.$oid}
