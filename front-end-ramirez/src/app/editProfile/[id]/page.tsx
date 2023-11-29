@@ -159,6 +159,7 @@ export default function EditProfile() {
       state: data.state ?? null,
     };
     setUser(user);
+    setIsPhotographer(user.photographer);
   }
 
   useEffect(() => {
@@ -220,7 +221,7 @@ export default function EditProfile() {
     setEditImageFormIsActive(false);
     setHasInfoChanged(true);
     setTimeout(() => {
-      // router.reload();
+      router.refresh();
     }, 3000);
   }
 
@@ -258,9 +259,13 @@ export default function EditProfile() {
       .catch((error) => error.json());
 
     if (res.error) {
-      notifyError(
-        "Não foi possível atualizar as informações. Verifique os campos!"
-      );
+      if (res.error.bio) {
+        notifyError("Muito curto! Escreva, no mínimo, 20 caracteres!");
+      } else {
+        notifyError(
+          "Não foi possível atualizar as informações. Verifique os campos!"
+        );
+      }
       return;
     }
     notifySuccess("Informações atualizadas!");
@@ -328,6 +333,9 @@ export default function EditProfile() {
 
     return signalColors[selectedSpecializations?.length].color;
   }
+
+  console.log(user.photographer);
+  console.log("isPhotographer", isPhotographer);
 
   return (
     <Container initial="initial" animate="animate">
