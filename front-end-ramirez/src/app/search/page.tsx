@@ -116,12 +116,13 @@ export default function Search() {
         query += `${field}=${value}&`;
       }
     }
+    console.log("Query", query);
     return query;
   }
 
   return (
     <Container
-      initial={{width: 0, opacity: 0}} 
+      initial={{ width: 0, opacity: 0 }}
       animate={{ width: "100vw", opacity: 1 }}
       exit={{ x: "100%" }}
     >

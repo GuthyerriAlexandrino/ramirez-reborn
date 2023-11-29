@@ -54,9 +54,8 @@ interface Post {
 }
 
 export default function ProfilePhotographer() {
-  const { userProfileImage, getProfileImage } = useAuthLogin();
-
   const [user, setUser] = useState<UserP>({} as UserP);
+  const [profileImage, setProfileImage] = useState<string | null>("");
   const [popupIsOpen, setPopupIsOpen] = useState(false);
   const [allPostsList, setAllPostsList] = useState<Post[]>([]);
   const { ref, inView } = useInView();
@@ -65,8 +64,6 @@ export default function ProfilePhotographer() {
   const userSectionId = cookies["ramirez-user-id"];
   const token = cookies["ramirez-user"];
   const { id } = useParams();
-  // const { objetoSerializado } = useParams();
-  //    const meuObjeto = JSON.parse(decodeURIComponent(objetoSerializado));
 
   function handlePopUpScreen(value: boolean) {
     setPopupIsOpen(value);
@@ -133,6 +130,29 @@ export default function ProfilePhotographer() {
     setAllPostsList(urlsLinks);
   }
 
+  async function getProfileImage() {
+    if (user.profile_img === "") {
+      setProfileImage("/default-photo-profile.png");
+      return;
+    }
+    const data: UserP = await fetch(`http://127.0.0.1:3001/user/${id}`, {
+      method: "GET",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.json());
+
+    const foresRef = refFirebase(storage, data.profile_img);
+    await getDownloadURL(foresRef)
+      .then((url) => setProfileImage(url))
+      .catch((error) => console.log(error));
+  }
+
+  function verifyIfHasPrices() {
+    return user?.services_price?.reduce((prev, curr) => prev + curr, 0);
+  }
+
   useEffect(() => {
     try {
       setUser(JSON.parse(decodeURIComponent(id)));
@@ -142,8 +162,10 @@ export default function ProfilePhotographer() {
   }, []);
 
   useEffect(() => {
-    getProfileImage();
-    getAllPostsFromUser();
+    if (user._id) {
+      getProfileImage();
+      getAllPostsFromUser();
+    }
   }, [user]);
 
   useEffect(() => {
@@ -181,7 +203,7 @@ export default function ProfilePhotographer() {
           <ProfileAside>
             <ProfileImage>
               <Image
-                src={userProfileImage ? userProfileImage : "/default-user.pn"}
+                src={profileImage ? profileImage : "/default-photo-profile.png"}
                 layout="responsive"
                 objectFit="cover"
                 width={176}
@@ -208,7 +230,7 @@ export default function ProfilePhotographer() {
           <ProfileAbout>
             <h2>Sobre mim</h2>
             <p data-bio={user?.bio !== "" ? "hasBio" : "noBio"}>
-              {user?.bio !== "" ? user?.bio : "Nenhuma informação escrita..."}
+              {user?.bio ? user?.bio : "Nenhuma informação escrita..."}
             </p>
           </ProfileAbout>
           <ProfileCareer>
@@ -216,14 +238,16 @@ export default function ProfilePhotographer() {
             <CareerDataContainer>
               <CareerData isRight={false}>
                 <h3>Especialização</h3>
-                {user?.specialization?.map((item, index) => (
-                  <span key={index}>{item}</span>
-                ))}
+                {user?.specialization?.length
+                  ? user?.specialization?.map((item, index) => (
+                      <span key={index}>{item}</span>
+                    ))
+                  : "Nenhuma especialização informada"}
               </CareerData>
               <Divider vertical={true} height={90} />
               <CareerData isRight={true}>
                 <h3>Valor de Serviço</h3>
-                {user?.services_price?.length > 0 ? (
+                {verifyIfHasPrices() ? (
                   <span>
                     R$ {user?.services_price[0]} - R$ {user?.services_price[1]}{" "}
                     / foto

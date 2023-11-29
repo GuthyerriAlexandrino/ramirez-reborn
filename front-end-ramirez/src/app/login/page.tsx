@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Container,
@@ -17,14 +17,17 @@ import EyeInvisible from "../assets/ant-design_eye-invisible-filled.svg";
 
 import { makeFadeInRightAnimation, stagger } from "../utils/animations";
 import { useAuthLogin } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useNotify } from "../context/NotifyContext";
 
 export default function LogIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
 
-  const { handleLogin } = useAuthLogin();
+  const { handleLogin, verifyTokenExpiration } = useAuthLogin();
 
   function handleVisiblePassword() {
     setVisible(!visible);
@@ -34,6 +37,12 @@ export default function LogIn() {
     event.preventDefault();
     await handleLogin({ email, password });
   }
+
+  useEffect(() => {
+    if (verifyTokenExpiration()) {
+      router.push("/search");
+    }
+  }, []);
 
   return (
     <Container

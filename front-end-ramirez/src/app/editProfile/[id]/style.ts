@@ -21,6 +21,29 @@ export const Container = styled(motion.div)`
   justify-content: center;
 `;
 
+export const BackPageLink = styled.div`
+  display: grid;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 1.875rem;
+  padding: 2rem;
+
+  div {
+    cursor: pointer;
+
+    button {
+      margin-left: 0.875rem;
+      font-size: 1rem;
+      font-family: "Inter", sans-serif;
+      font-weight: 500;
+      color: ${pallete.turquoiseOne};
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+    }
+  }
+`;
+
 export const EditFormContainer = styled(motion.main)`
   display: grid;
   max-width: 700px;

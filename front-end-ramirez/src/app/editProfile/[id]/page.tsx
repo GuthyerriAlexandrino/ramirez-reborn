@@ -21,6 +21,7 @@ import {
   Signal,
   SpecializationTags,
   UpdateImage,
+  BackPageLink,
 } from "./style";
 
 import { Icon, InputContainer } from "../../styles/form";
@@ -38,7 +39,10 @@ import {
   User,
   XCircle,
 } from "phosphor-react";
+
 import Email from "../../assets/email.svg";
+import ArrowBack from "../../assets/arrow-back.svg";
+
 import { pallete } from "../../styles/colors";
 import {
   makeFadeInRightAnimation,
@@ -46,12 +50,12 @@ import {
   variantsItems,
 } from "../../utils/animations";
 import { motion } from "framer-motion";
-import { UserP } from "../../search/page";
 import { FormEvent, useEffect, useState } from "react";
 import { parseCookies } from "nookies";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthLogin } from "@/app/context/AuthContext";
 import { useNotify } from "@/app/context/NotifyContext";
+import Link from "next/link";
 
 const signalColors = [
   { color: pallete.green },
@@ -105,12 +109,8 @@ export default function EditProfile() {
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [visibleConfirmPassword, setVisibleConfirmPassword] = useState(false);
   const [isPhotographer, setIsPhotographer] = useState(user.photographer);
-  const [minusValue, setMinusValue] = useState(
-    user.services_price?.length > 0 ? user.services_price[0] : 0
-  );
-  const [maxValue, setMaxValue] = useState(
-    user.services_price?.length > 0 ? user.services_price[1] : 0
-  );
+  const [minusValue, setMinusValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
   const [editedUser, setEditedUser] = useState<User>({
     bio: user.bio,
     city: user.city,
@@ -160,6 +160,8 @@ export default function EditProfile() {
     };
     setUser(user);
     setIsPhotographer(user.photographer);
+    setMinusValue(user.services_price[0]);
+    setMaxValue(user.services_price[1]);
   }
 
   useEffect(() => {
@@ -173,7 +175,7 @@ export default function EditProfile() {
   useEffect(() => {
     if (hasInfoChanged) {
       setHasInfoChanged(false);
-      router.push(`/editProfile/${userSectionId}`);
+      router.push(`/profile/photographer/${userSectionId}`);
     }
   }, [hasInfoChanged, router, userSectionId]);
 
@@ -334,12 +336,17 @@ export default function EditProfile() {
     return signalColors[selectedSpecializations?.length].color;
   }
 
-  console.log(user.photographer);
-  console.log("isPhotographer", isPhotographer);
-
   return (
     <Container initial="initial" animate="animate">
       <Header userId={userSectionId} />
+      <BackPageLink>
+        <Link href={`/profile/photographer/${userSectionId}`}>
+          <div>
+            <Image alt={"icone de retorno"} src={ArrowBack} />
+            <button>Voltar para perfil</button>
+          </div>
+        </Link>
+      </BackPageLink>
       <ModalChangeImageContainer isActive={editImageFormIsActive}>
         <ModalChangeImage>
           <div data-name="photoEditImage">

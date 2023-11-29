@@ -1,17 +1,17 @@
-import { 
-    FormArea,
-    InputContainer,
-    InputValue,
-    InputFileLabel,
-    InputFile,
-    FormAreaContainer, 
-    PopupContainer,
-    Typography,
-    ButtonSubmit,
-    IconArea,
-    IconContainer,
-    PreviewImage,
-    Icon
+import {
+  FormArea,
+  InputContainer,
+  InputValue,
+  InputFileLabel,
+  InputFile,
+  FormAreaContainer,
+  PopupContainer,
+  Typography,
+  ButtonSubmit,
+  IconArea,
+  IconContainer,
+  PreviewImage,
+  Icon,
 } from "./style";
 
 import { FilePlus, Minus, Plus, XCircle } from "phosphor-react";
@@ -25,178 +25,176 @@ import { useRouter } from "next/navigation";
 // import { useRouter } from "next/router";
 
 type PublishPhotoProps = {
-    handlePopUp: (value: boolean) => void;
-}
+  handlePopUp: (value: boolean) => void;
+};
 
-export function PublishPhoto({handlePopUp}: PublishPhotoProps) {
-    const [photoImageContent, setPhotoImageContent] = useState<File>();
-    const [photoPrice, setPhotoPrice] = useState<number | null>(null);
-    const [photoTitle, setPhotoTitle] = useState("");
-    const router = useRouter();
+export function PublishPhoto({ handlePopUp }: PublishPhotoProps) {
+  const [photoImageContent, setPhotoImageContent] = useState<File>();
+  const [photoPrice, setPhotoPrice] = useState<number | null>(null);
+  const [photoTitle, setPhotoTitle] = useState("");
+  const router = useRouter();
 
-    const {
-        notifyError,
-        notifySuccess
-    } = useNotify();
+  const { notifyError, notifySuccess } = useNotify();
 
-    async function addNewPost(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+  async function addNewPost(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-        if (!verifyIfSizesImageIsValid()) {
-            notifyError("Falha ao postar conteúdo! Tamanho da imagem é maior que 2 MB!")
-            return;
-        }
-
-        const imageData = new FormData();
-        imageData.append('image', photoImageContent!)
-        imageData.append('title', photoTitle)
-        if (photoPrice! > 0) {
-            imageData.append('price', photoPrice?.toString()!)
-        }
-
-        let cookies = parseCookies();
-        let token = cookies["ramirez-user"]
-        let userSectionId = cookies["ramirez-user-id"]
-        console.log(cookies);
-        
-        const res = await fetch("http://127.0.0.1:3001/posts", {
-            method: "POST",
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Authorization': `Bearer ${token}`
-            },
-            body: imageData
-        }).then(response => response)
-        .catch(error => error.json())
-
-        if (res.error) {
-            notifyError("Não foi possível enviar a imagem. Verifique os campos!")
-        }
-        notifySuccess("Postagem enviada com sucesso!");
-        handlePopUp(false);
-        router.push(`/profile/photographer/${userSectionId}`)
-        console.log(res)
+    if (!verifyIfSizesImageIsValid()) {
+      notifyError(
+        "Falha ao postar conteúdo! Tamanho da imagem é maior que 2 MB!"
+      );
+      return;
     }
 
-    function changePhotoPrice(value: number) {
-        if (value < 0) {
-            setPhotoPrice((photoPrice! - 1) < 0 ? 0 : photoPrice! - 1);
-            return;
-        }
-        setPhotoPrice(photoPrice! + 1)
+    const imageData = new FormData();
+    imageData.append("image", photoImageContent!);
+    imageData.append("title", photoTitle);
+    if (photoPrice! > 0) {
+      imageData.append("price", photoPrice?.toString()!);
     }
 
-    function verifyIfSizesImageIsValid() {
-        const {value, sizes} = formatBytes(photoImageContent?.size!);
+    let cookies = parseCookies();
+    let token = cookies["ramirez-user"];
+    let userSectionId = cookies["ramirez-user-id"];
 
-        if (sizes === "mb" && value > 2) {
-            return false;
-        }
-        return true;
+    const res = await fetch("http://127.0.0.1:3001/posts", {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        Authorization: `Bearer ${token}`,
+      },
+      body: imageData,
+    })
+      .then((response) => response)
+      .catch((error) => error.json());
+
+    if (res.error) {
+      notifyError("Não foi possível enviar a imagem. Verifique os campos!");
     }
+    notifySuccess("Postagem enviada com sucesso!");
+    handlePopUp(false);
+    router.push(`/profile/photographer/${userSectionId}`);
+  }
 
-    function renderSizeOfImage() {
-        const {value, sizes} = formatBytes(photoImageContent?.size!);
-
-        return (
-            <strong>{value!} <sub>{sizes}</sub></strong>
-        )
+  function changePhotoPrice(value: number) {
+    if (value < 0) {
+      setPhotoPrice(photoPrice! - 1 < 0 ? 0 : photoPrice! - 1);
+      return;
     }
+    setPhotoPrice(photoPrice! + 1);
+  }
+
+  function verifyIfSizesImageIsValid() {
+    const { value, sizes } = formatBytes(photoImageContent?.size!);
+
+    if (sizes === "mb" && value > 2) {
+      return false;
+    }
+    return true;
+  }
+
+  function renderSizeOfImage() {
+    const { value, sizes } = formatBytes(photoImageContent?.size!);
 
     return (
-        <PopupContainer>
-            <FormAreaContainer>
-                <IconArea onClick={() => handlePopUp(false)}>
-                    <XCircle color={pallete.red} weight="fill" size={40} />
-                </IconArea>
-                <Typography>Postar uma nova foto</Typography>
-                <FormArea 
-                    action="http://127.0.0.1:3001" 
-                    encType="multipart/form-data"
-                    method="post" 
-                    onSubmit={addNewPost}
-                >
-                    <InputContainer>
-                        <label htmlFor="title">Título</label>
-                        <InputValue 
-                            type="text" 
-                            id="title" 
-                            name="title" 
-                            placeholder="Digite aqui um título para sua foto"
-                            required
-                            onChange={(event) => setPhotoTitle(event.target.value)}
-                        />
-                    </InputContainer>
-                    <InputContainer>
-                        <label htmlFor="price">Preço</label>
-                        <Icon 
-                            title="Valor mínimo"
-                            data-title="minus"
-                            valuePosition={40}  
-                            onClick={() => changePhotoPrice(-1)}
-                        >
-                            <Minus 
-                                size={24} 
-                                color={pallete.red} 
-                                weight="bold" 
-                            />
-                        </Icon>
-                        <Icon 
-                            title="Valor máximo"
-                            data-title="plus"
-                            valuePosition={10}
-                            onClick={() => changePhotoPrice(1)}
-                        >
-                            <Plus 
-                                size={24} 
-                                color={pallete.green} 
-                                weight="bold" 
-                            />
-                        </Icon>
-                        <InputValue
-                            id="price" 
-                            name="price" 
-                            type="number"
-                            value={photoPrice === null ? "" : photoPrice} 
-                            onChange={(event) => setPhotoPrice(Number(event.target.value))}
-                            placeholder="Digite aqui o preço da voto. Ex.: 100"
-                            min={0}
-                        />
-                    </InputContainer>
-                    <InputContainer>
-                        <label>Foto {renderSizeOfImage()} </label>
-                        <InputFileLabel>
-                            <span>{photoImageContent ? `> ${photoImageContent.name}` : "Insira aqui uma foto"}</span>
-                            {photoImageContent ? (
-                                <PreviewImage>
-                                    <Image 
-                                        src={URL.createObjectURL(photoImageContent!)} 
-                                        alt="foto para publicação"
-                                        layout="fixed"
-                                        width={100}
-                                        height={100}
-                                        objectFit="cover"
-                                    />
-                                </PreviewImage>
-                            ) : (
-                                <IconContainer>
-                                    <FilePlus color={pallete.grayTwo} weight="fill" size={40}/>
-                                </IconContainer>
-                            )}
-                            <InputFile
-                                type="file"
-                                id="file"
-                                name="file"
-                                placeholder="Insira aqui uma foto"
-                                required
-                                accept=".jpg,.jpeg,.png"
-                                onChange={(e) => e.target.files && setPhotoImageContent(e.target.files[0]!)}
-                            />
-                        </InputFileLabel>
-                    </InputContainer>
-                    <ButtonSubmit type="submit">Postar foto</ButtonSubmit>
-                </FormArea>
-            </FormAreaContainer>            
-        </PopupContainer>
-    )
+      <strong>
+        {value!} <sub>{sizes}</sub>
+      </strong>
+    );
+  }
+
+  return (
+    <PopupContainer>
+      <FormAreaContainer>
+        <IconArea onClick={() => handlePopUp(false)}>
+          <XCircle color={pallete.red} weight="fill" size={40} />
+        </IconArea>
+        <Typography>Postar uma nova foto</Typography>
+        <FormArea
+          action="http://127.0.0.1:3001"
+          encType="multipart/form-data"
+          method="post"
+          onSubmit={addNewPost}
+        >
+          <InputContainer>
+            <label htmlFor="title">Título</label>
+            <InputValue
+              type="text"
+              id="title"
+              name="title"
+              placeholder="Digite aqui um título para sua foto"
+              required
+              onChange={(event) => setPhotoTitle(event.target.value)}
+            />
+          </InputContainer>
+          <InputContainer>
+            <label htmlFor="price">Preço</label>
+            <Icon
+              title="Valor mínimo"
+              data-title="minus"
+              valuePosition={40}
+              onClick={() => changePhotoPrice(-1)}
+            >
+              <Minus size={24} color={pallete.red} weight="bold" />
+            </Icon>
+            <Icon
+              title="Valor máximo"
+              data-title="plus"
+              valuePosition={10}
+              onClick={() => changePhotoPrice(1)}
+            >
+              <Plus size={24} color={pallete.green} weight="bold" />
+            </Icon>
+            <InputValue
+              id="price"
+              name="price"
+              type="number"
+              value={photoPrice === null ? "" : photoPrice}
+              onChange={(event) => setPhotoPrice(Number(event.target.value))}
+              placeholder="Digite aqui o preço da voto. Ex.: 100"
+              min={0}
+            />
+          </InputContainer>
+          <InputContainer>
+            <label>Foto {renderSizeOfImage()} </label>
+            <InputFileLabel>
+              <span>
+                {photoImageContent
+                  ? `> ${photoImageContent.name}`
+                  : "Insira aqui uma foto"}
+              </span>
+              {photoImageContent ? (
+                <PreviewImage>
+                  <Image
+                    src={URL.createObjectURL(photoImageContent!)}
+                    alt="foto para publicação"
+                    layout="fixed"
+                    width={100}
+                    height={100}
+                    objectFit="cover"
+                  />
+                </PreviewImage>
+              ) : (
+                <IconContainer>
+                  <FilePlus color={pallete.grayTwo} weight="fill" size={40} />
+                </IconContainer>
+              )}
+              <InputFile
+                type="file"
+                id="file"
+                name="file"
+                placeholder="Insira aqui uma foto"
+                required
+                accept=".jpg,.jpeg,.png"
+                onChange={(e) =>
+                  e.target.files && setPhotoImageContent(e.target.files[0]!)
+                }
+              />
+            </InputFileLabel>
+          </InputContainer>
+          <ButtonSubmit type="submit">Postar foto</ButtonSubmit>
+        </FormArea>
+      </FormAreaContainer>
+    </PopupContainer>
+  );
 }
